@@ -126,8 +126,13 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
   $taskId = (int)$task['id'];
   $sections = $card['sections'];
   $ctx = $card['context'];
+  $nAlways      = count($sections['always'] ?? []);
+  $nConditional = count($sections['conditional'] ?? []);
+  $nOther       = count($sections['other_safety'] ?? []);
+  $nNotes       = count($card['notes'] ?? []);
+  $nRisks       = count($card['risks'] ?? []);
 ?>
-<dialog class="sm-modal" id="sm-task-modal-<?= $taskId ?>" aria-labelledby="sm-task-modal-title-<?= $taskId ?>">
+<dialog class="sm-modal sm-task-modal" id="sm-task-modal-<?= $taskId ?>" aria-labelledby="sm-task-modal-title-<?= $taskId ?>">
   <div class="sm-modal-header">
     <h3 id="sm-task-modal-title-<?= $taskId ?>"><?= sm_h((string)$task['name']) ?></h3>
     <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-task-modal>&times;</button>
@@ -143,12 +148,44 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
     <p class="sm-modal-description"><?= sm_h((string)$task['description']) ?></p>
   <?php endif; ?>
 
+  <?php /* ── Yhteenveto ── */ ?>
+  <div class="sm-modal-summary" role="region" aria-label="<?= sm_h(sm_t('summary', $lang)) ?>">
+    <?php if ($nAlways > 0): ?>
+    <div class="sm-modal-stat sm-modal-stat-mandatory">
+      <span class="sm-modal-stat-value"><?= $nAlways ?></span>
+      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_always', $lang)) ?></span>
+    </div>
+    <?php endif; ?>
+    <?php if ($nConditional > 0): ?>
+    <div class="sm-modal-stat sm-modal-stat-conditional">
+      <span class="sm-modal-stat-value"><?= $nConditional ?></span>
+      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_conditional', $lang)) ?></span>
+    </div>
+    <?php endif; ?>
+    <?php if ($nOther > 0): ?>
+    <div class="sm-modal-stat sm-modal-stat-other">
+      <span class="sm-modal-stat-value"><?= $nOther ?></span>
+      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_other', $lang)) ?></span>
+    </div>
+    <?php endif; ?>
+    <?php if ($nNotes + $nRisks > 0): ?>
+    <div class="sm-modal-stat sm-modal-stat-notes">
+      <span class="sm-modal-stat-value"><?= $nNotes + $nRisks ?></span>
+      <span class="sm-modal-stat-label"><?= sm_h(sm_t('notes_and_risks', $lang)) ?></span>
+    </div>
+    <?php endif; ?>
+  </div>
+
   <?php if (!empty($sections['always'])): ?>
     <section class="sm-result-section">
       <div class="sm-section-header">
-        <h4 class="sm-section-title"><?= sm_h(sm_t('section_always', $lang)) ?></h4>
+        <h4 class="sm-section-title">
+          <span class="sm-section-badge sm-section-badge-always">!</span>
+          <?= sm_h(sm_t('section_always', $lang)) ?>
+        </h4>
+        <span class="sm-badge sm-badge-mandatory"><?= $nAlways ?></span>
       </div>
-      <div class="sm-grid-cards">
+      <div class="sm-ppe-grid">
         <?php foreach ($sections['always'] as $ppeCard): ?>
           <?= sm_render_ppe_card($ppeCard, $lang) ?>
         <?php endforeach; ?>
@@ -159,9 +196,13 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
   <?php if (!empty($sections['conditional'])): ?>
     <section class="sm-result-section">
       <div class="sm-section-header">
-        <h4 class="sm-section-title"><?= sm_h(sm_t('section_conditional', $lang)) ?></h4>
+        <h4 class="sm-section-title">
+          <span class="sm-section-badge sm-section-badge-conditional">?</span>
+          <?= sm_h(sm_t('section_conditional', $lang)) ?>
+        </h4>
+        <span class="sm-badge sm-badge-conditional"><?= $nConditional ?></span>
       </div>
-      <div class="sm-grid-cards">
+      <div class="sm-ppe-grid">
         <?php foreach ($sections['conditional'] as $ppeCard): ?>
           <?= sm_render_ppe_card($ppeCard, $lang) ?>
         <?php endforeach; ?>
@@ -172,9 +213,13 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
   <?php if (!empty($sections['other_safety'])): ?>
     <section class="sm-result-section">
       <div class="sm-section-header">
-        <h4 class="sm-section-title"><?= sm_h(sm_t('section_other', $lang)) ?></h4>
+        <h4 class="sm-section-title">
+          <span class="sm-section-badge sm-section-badge-other">+</span>
+          <?= sm_h(sm_t('section_other', $lang)) ?>
+        </h4>
+        <span class="sm-badge sm-badge-published"><?= $nOther ?></span>
       </div>
-      <div class="sm-grid-cards">
+      <div class="sm-ppe-grid">
         <?php foreach ($sections['other_safety'] as $ppeCard): ?>
           <?= sm_render_ppe_card($ppeCard, $lang) ?>
         <?php endforeach; ?>
@@ -189,7 +234,7 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
       </div>
       <div class="sm-info-list">
         <?php foreach ($card['notes'] as $note): ?><div class="sm-info-row"><p><?= sm_h((string)$note) ?></p></div><?php endforeach; ?>
-        <?php foreach ($card['risks'] as $risk): ?><div class="sm-info-row"><strong><?= sm_h(sm_t('risk', $lang)) ?></strong><p><?= sm_h((string)$risk) ?></p></div><?php endforeach; ?>
+        <?php foreach ($card['risks'] as $risk): ?><div class="sm-info-row sm-info-row-risk"><strong><?= sm_h(sm_t('risk', $lang)) ?></strong><p><?= sm_h((string)$risk) ?></p></div><?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>

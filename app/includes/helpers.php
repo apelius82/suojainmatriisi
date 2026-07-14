@@ -90,28 +90,30 @@ function sm_render_ppe_card(array $card, string $lang = 'fi'): string
 
     $out  = '<article class="sm-ppe-card sm-ppe-card-' . $levelClass . '">';
     $out .= '<div class="sm-ppe-card-header">';
-    $out .= '<img src="' . $imgSrc . '" alt="' . $name . '" width="44" height="44" loading="lazy" class="sm-ppe-img">';
+    $out .= '<img src="' . $imgSrc . '" alt="' . $name . '" width="40" height="40" loading="lazy" class="sm-ppe-img">';
     $out .= '<div class="sm-ppe-card-title">';
     $out .= '<h3>' . $name . '</h3>';
+    $out .= '<div class="sm-ppe-card-meta-row">';
     if ($stdRef !== '') {
         $out .= '<span class="sm-ppe-std">' . sm_h($stdRef) . '</span>';
     }
-    $out .= '</div>';
-    $out .= '</div>';
-    $out .= '<div class="sm-ppe-card-footer">';
     $out .= '<span class="sm-badge sm-badge-' . $levelClass . '">' . $levelLabel . '</span>';
-    if ($scope !== '') {
-        $scopeLabel = sm_scope_label($scope, $lang);
-        if ($scopeLabel !== '') {
-            $out .= '<span class="sm-ppe-scope">' . sm_h($scopeLabel) . '</span>';
-        }
-    }
     $out .= '</div>';
-    if ($condition !== '') {
-        $out .= '<p class="sm-ppe-condition"><span aria-hidden="true">⚠</span><span class="sm-visually-hidden">' . sm_t('label_condition', $lang) . '</span> ' . sm_h($condition) . '</p>';
-    } elseif ($notes !== '') {
-        $out .= '<p class="sm-ppe-condition">' . sm_h($notes) . '</p>';
+    $out .= '</div>';
+    $out .= '</div>';
+
+    // Lisätiedot (ehto tai huomio) avattavana accordionina
+    $detail = $condition !== '' ? $condition : $notes;
+    if ($detail !== '') {
+        $detailLabel = $condition !== ''
+            ? '<span aria-hidden="true">⚠</span> ' . sm_h(sm_t('label_condition', $lang))
+            : sm_h(sm_t('notes', $lang));
+        $out .= '<details class="sm-ppe-details">';
+        $out .= '<summary class="sm-ppe-details-toggle">' . $detailLabel . '</summary>';
+        $out .= '<p class="sm-ppe-details-text">' . sm_h($detail) . '</p>';
+        $out .= '</details>';
     }
+
     $out .= '</article>';
     return $out;
 }
