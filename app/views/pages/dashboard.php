@@ -414,9 +414,9 @@ foreach ($data['rules'] as $rule) {
                   <label>Nimi <input name="name" required value="<?= sm_h($task['name']) ?>"></label>
                   <label>Tyyppi
                     <select name="work_type">
-                     <option value="task" <?= $wt === 'task' ? 'selected' : '' ?>>Tehtävä</option>
-                     <option value="work_type" <?= $wt === 'work_type' ? 'selected' : '' ?>>Työlaji</option>
-                     <option value="position" <?= $wt === 'position' ? 'selected' : '' ?>>Vakanssi</option>
+                      <option value="task" <?= $wt === 'task' ? 'selected' : '' ?>>Tehtävä</option>
+                      <option value="work_type" <?= $wt === 'work_type' ? 'selected' : '' ?>>Työlaji</option>
+                      <option value="position" <?= $wt === 'position' ? 'selected' : '' ?>>Vakanssi</option>
                     </select>
                   </label>
                   <label>Kategoria <input name="category" required value="<?= sm_h($task['category']) ?>"></label>
@@ -519,8 +519,8 @@ foreach ($data['rules'] as $rule) {
                   <label>Nimi <input name="name" required value="<?= sm_h($item['name']) ?>"></label>
                   <label>Luokka
                     <select name="item_class">
-                     <option value="personal_protection" <?= $cls === 'personal_protection' ? 'selected' : '' ?>><?= sm_h(sm_t('personal_protection', $lang)) ?></option>
-                     <option value="other_safety" <?= $cls === 'other_safety' ? 'selected' : '' ?>><?= sm_h(sm_t('other_safety', $lang)) ?></option>
+                      <option value="personal_protection" <?= $cls === 'personal_protection' ? 'selected' : '' ?>><?= sm_h(sm_t('personal_protection', $lang)) ?></option>
+                      <option value="other_safety" <?= $cls === 'other_safety' ? 'selected' : '' ?>><?= sm_h(sm_t('other_safety', $lang)) ?></option>
                     </select>
                   </label>
                   <label>Kategoria <input name="category" required value="<?= sm_h($item['category']) ?>"></label>
