@@ -1,2 +1,41 @@
-/* SafetyFlash-inspired card rhythm with project-specific classes */
-.sm-card h2 { margin-top: 0; }
+/* ===== SETTINGS / ADMIN PAGE STYLES ===== */
+
+/* Rule form layout */
+.sm-rule-form-grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.sm-rule-form-grid .sm-form-full { grid-column: 1 / -1; }
+
+/* Status workflow badge strip */
+.sm-status-strip {
+  display: flex; gap: .4rem; flex-wrap: wrap; align-items: center;
+  padding: .75rem 0; border-bottom: 1px solid var(--sm-border); margin-bottom: 1rem;
+}
+.sm-status-step {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .25rem .65rem; border-radius: 999px;
+  font-size: .78rem; font-weight: 700; opacity: .45;
+}
+.sm-status-step.current { opacity: 1; box-shadow: 0 0 0 2px var(--sm-dark); }
+
+/* Inline rule status change form */
+.sm-rule-status-form { display: flex; gap: .4rem; align-items: center; }
+.sm-rule-status-form select { padding: .3rem .5rem; font-size: .82rem; min-width: 100px; }
+
+/* Stats / summary row */
+.sm-stats-row {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-bottom: 1.25rem;
+}
+.sm-stat-card {
+  background: var(--sm-card); border: 1px solid var(--sm-border); border-radius: var(--sm-radius);
+  padding: 1rem; text-align: center; box-shadow: var(--sm-shadow);
+}
+.sm-stat-value { display: block; font-size: 1.75rem; font-weight: 700; color: var(--sm-dark); line-height: 1.2; }
+.sm-stat-label { display: block; font-size: .78rem; color: var(--sm-muted); margin-top: .2rem; }
+
+/* ===== PPE ICON PICKER ===== */
+.sm-icon-hint { font-size: .8rem; color: var(--sm-muted); margin-top: .2rem; }
+.sm-icon-hint code { background: var(--sm-surface-2); padding: .1rem .3rem; border-radius: 4px; font-family: monospace; }
