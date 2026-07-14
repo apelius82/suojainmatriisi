@@ -143,3 +143,13 @@ function sm_ppe_img_url(array $ppe): string
     }
     return sm_base_url() . '/assets/img/ppe/' . ($ppe['icon'] ?? 'shield.svg');
 }
+
+/** Palauttaa tehtävän kansikuvan URL-osoitteen tai null jos kuvaa ei ole */
+function sm_task_img_url(array $task): ?string
+{
+    $imagePath = (string)($task['cover_image_path'] ?? '');
+    if ($imagePath !== '') {
+        return sm_base_url() . '/app/api/task_image.php?f=' . urlencode($imagePath);
+    }
+    return null;
+}

@@ -319,14 +319,29 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
           $wt = (string)($task['work_type'] ?? 'task');
           $taskId = (int)$task['id'];
           $taskMeta = $data['taskMeta'][$taskId] ?? ['ppe_count' => 0, 'sites' => [], 'zones' => []];
+          $taskImgUrl = sm_task_img_url($task);
         ?>
           <article class="sm-admin-entity-card">
             <div class="sm-admin-entity-head">
-              <div>
-                <h3><?= sm_h((string)$task['name']) ?></h3>
-                <div class="sm-list-row-meta">
-                  <span class="sm-badge sm-badge-global" style="font-size:.72rem"><?= sm_h($wt) ?></span>
-                  <span style="color:var(--sm-muted);font-size:.8rem"> <?= sm_h((string)$task['category']) ?></span>
+              <div style="display:flex;gap:.75rem;align-items:center;">
+                <?php if ($taskImgUrl !== null): ?>
+                  <img src="<?= sm_h($taskImgUrl) ?>" alt="" width="48" height="48"
+                       class="sm-admin-task-thumb" style="object-fit:cover;border-radius:8px;background:var(--sm-surface-2);flex-shrink:0;">
+                <?php else: ?>
+                  <div class="sm-admin-task-thumb-placeholder" style="width:48px;height:48px;border-radius:8px;background:var(--sm-surface-2);border:1px solid var(--sm-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sm-muted)">
+                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                      <line x1="8" y1="21" x2="16" y2="21"></line>
+                      <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                  </div>
+                <?php endif; ?>
+                <div>
+                  <h3><?= sm_h((string)$task['name']) ?></h3>
+                  <div class="sm-list-row-meta">
+                    <span class="sm-badge sm-badge-global" style="font-size:.72rem"><?= sm_h($wt) ?></span>
+                    <span style="color:var(--sm-muted);font-size:.8rem"> <?= sm_h((string)$task['category']) ?></span>
+                  </div>
                 </div>
               </div>
               <span class="sm-badge sm-badge-published"><?= sm_h(sm_tr('count_equipment', ['count' => (int)$taskMeta['ppe_count']], $lang)) ?></span>
@@ -363,7 +378,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <h3><?= sm_h(sm_tr('edit_task_title', ['name' => (string)$task['name']], $lang)) ?></h3>
               <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>&times;</button>
             </div>
-            <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=edit_entity" class="sm-form-row">
+            <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=edit_entity" class="sm-rule-form-grid">
               <?= sm_csrf_field() ?>
               <input type="hidden" name="entity_type" value="task">
               <input type="hidden" name="entity_id" value="<?= $taskId ?>">
@@ -376,18 +391,37 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                 </select>
               </label>
               <label>Kategoria <input name="category" required value="<?= sm_h((string)$task['category']) ?>"></label>
+              <label class="sm-form-full">Kuvaus <textarea name="description" rows="2" placeholder="Lyhyt kuvaus tehtävästä..."><?= sm_h((string)($task['description'] ?? '')) ?></textarea></label>
+              <label class="sm-form-full">Huomiolaatikko <textarea name="cover_note" rows="2" placeholder="Tärkeä huomio tai ohje modalin hero-alueelle..."><?= sm_h((string)($task['cover_note'] ?? '')) ?></textarea></label>
               <div style="display:flex;gap:.5rem;align-items:center">
                 <button class="sm-btn sm-btn-primary sm-btn-sm" type="submit">Tallenna</button>
                 <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>Peruuta</button>
               </div>
             </form>
+            <div class="sm-ppe-img-upload">
+              <strong>Tehtävän kansikuva</strong>
+              <?php if ($taskImgUrl !== null): ?>
+                <div style="margin:.5rem 0">
+                  <img src="<?= sm_h($taskImgUrl) ?>" alt="" width="120" height="80"
+                       style="object-fit:cover;border-radius:8px;border:1px solid var(--sm-border);">
+                </div>
+              <?php endif; ?>
+              <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=upload_task_image"
+                    enctype="multipart/form-data" class="sm-inline-form" style="margin-top:.5rem">
+                <?= sm_csrf_field() ?>
+                <input type="hidden" name="task_id" value="<?= $taskId ?>">
+                <input type="file" name="task_image" accept="image/svg+xml,image/png,image/jpeg,image/webp" class="sm-file-input">
+                <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Lataa kuva</button>
+              </form>
+              <p class="sm-hint">Sallittu: SVG, PNG, JPG, WEBP – max 2 MB</p>
+            </div>
           </dialog>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
     <div class="sm-add-form-block">
       <h3>+ Lisää uusi työlaji / tehtävä</h3>
-      <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=save_task" class="sm-form-row">
+      <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=save_task" class="sm-rule-form-grid">
         <?= sm_csrf_field() ?>
         <label>Nimi <input name="name" required autocomplete="off" placeholder="Tehtävän nimi"></label>
         <label>Tyyppi
@@ -398,6 +432,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
           </select>
         </label>
         <label>Kategoria <input name="category" required autocomplete="off" placeholder="Esim. Louhintatyöt"></label>
+        <label class="sm-form-full">Kuvaus <input name="description" autocomplete="off" placeholder="Lyhyt kuvaus tehtävästä"></label>
         <label style="align-self:end"><button class="sm-btn sm-btn-primary" type="submit">Tallenna</button></label>
       </form>
     </div>

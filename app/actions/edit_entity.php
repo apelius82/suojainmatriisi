@@ -29,7 +29,9 @@ switch ($type) {
             $id,
             trim((string)$_POST['name']),
             trim((string)$_POST['category']),
-            trim((string)($_POST['work_type'] ?? 'task'))
+            trim((string)($_POST['work_type'] ?? 'task')),
+            trim((string)($_POST['description'] ?? '')),
+            trim((string)($_POST['cover_note'] ?? ''))
         );
         $audit->add((int)$user['id'], 'task.edit', ['id' => $id]);
         sm_redirect('/index.php?page=dashboard&tab=tasks');

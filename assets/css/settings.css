@@ -425,3 +425,147 @@ details[open] .sm-ppe-details-toggle::before { transform: rotate(90deg); }
 
 /* ===== INFO ROW RISK VARIANT ===== */
 .sm-info-row-risk { border-left: 3px solid #f59e0b; }
+
+/* ===== TASK MODAL HERO ===== */
+
+/* Modal otsikkopalkki */
+.sm-task-modal-header {
+  padding-bottom: 1rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--sm-border);
+}
+.sm-task-modal-title-top {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--sm-dark);
+  line-height: 1.2;
+}
+.sm-modal-close-btn {
+  flex-shrink: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: .25rem .55rem;
+  border-radius: 50%;
+}
+
+/* Hero-alue: vasemmalla kuva, oikealla tiedot */
+.sm-task-hero {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem 0 1.5rem;
+  border-bottom: 1px solid var(--sm-border);
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 680px) {
+  .sm-task-hero {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Tehtävän kuva-alue */
+.sm-task-hero-image {
+  width: 100%;
+}
+.sm-task-cover-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--sm-radius);
+  border: 1px solid var(--sm-border);
+  display: block;
+}
+.sm-task-cover-placeholder {
+  width: 100%;
+  height: 180px;
+  background: var(--sm-surface-2);
+  border: 1.5px dashed var(--sm-border-solid);
+  border-radius: var(--sm-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: var(--sm-muted);
+}
+.sm-task-cover-placeholder span {
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+/* Tehtävän tiedot oikealla */
+.sm-task-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+  min-width: 0;
+}
+
+/* Polkunavigaatio (ympäristö › työmaa › alue) */
+.sm-task-hero-path {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .3rem;
+  font-size: .82rem;
+}
+.sm-task-path-chip {
+  background: var(--sm-surface-2);
+  border: 1px solid var(--sm-border);
+  border-radius: 999px;
+  padding: .2rem .6rem;
+  color: var(--sm-muted);
+  font-weight: 600;
+}
+.sm-task-path-sep {
+  color: var(--sm-muted);
+  font-size: .9rem;
+}
+
+/* Kuvaus */
+.sm-task-hero-desc {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--sm-text);
+  line-height: 1.5;
+}
+
+/* Huomiolaatikko hero-alueessa */
+.sm-task-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  background: rgba(254, 224, 0, .1);
+  border: 1px solid rgba(254, 224, 0, .45);
+  border-radius: var(--sm-radius-sm);
+  padding: .75rem 1rem;
+}
+.sm-task-info-box-icon {
+  font-size: 1.05rem;
+  line-height: 1.3;
+  flex-shrink: 0;
+  color: #92400e;
+}
+.sm-task-info-box p {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--sm-dark);
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Tehtäväkortin kuvapikselöinti */
+.sm-task-card-thumb {
+  border-radius: var(--sm-radius) var(--sm-radius) 0 0;
+  overflow: hidden;
+  margin: -1rem -1rem .5rem;
+  height: 120px;
+}
+.sm-task-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
