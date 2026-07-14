@@ -88,8 +88,14 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         $taskId = (int)$task['id'];
         $summary = $card['summary'];
         $ctx = $card['context'];
+        $taskImgUrl = sm_task_img_url($task);
       ?>
       <article class="sm-task-card" data-task-id="<?= $taskId ?>">
+        <?php if ($taskImgUrl !== null): ?>
+          <div class="sm-task-card-thumb">
+            <img src="<?= sm_h($taskImgUrl) ?>" alt="" loading="lazy">
+          </div>
+        <?php endif; ?>
         <div class="sm-task-card-head">
           <h3><?= sm_h((string)$task['name']) ?></h3>
           <span class="sm-badge sm-badge-global"><?= sm_h((string)($task['work_type'] ?? 'task')) ?></span>
@@ -131,50 +137,93 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
   $nOther       = count($sections['other_safety'] ?? []);
   $nNotes       = count($card['notes'] ?? []);
   $nRisks       = count($card['risks'] ?? []);
+  $taskImgUrl   = sm_task_img_url($task);
+  $coverNote    = trim((string)($task['cover_note'] ?? ''));
 ?>
 <dialog class="sm-modal sm-task-modal" id="sm-task-modal-<?= $taskId ?>" aria-labelledby="sm-task-modal-title-<?= $taskId ?>">
-  <div class="sm-modal-header">
-    <h3 id="sm-task-modal-title-<?= $taskId ?>"><?= sm_h((string)$task['name']) ?></h3>
-    <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-task-modal>&times;</button>
+
+  <?php /* ── Modal otsikkorivi ── */ ?>
+  <div class="sm-modal-header sm-task-modal-header">
+    <h2 class="sm-task-modal-title-top" id="sm-task-modal-title-<?= $taskId ?>"><?= sm_h((string)$task['name']) ?></h2>
+    <button class="sm-btn sm-btn-ghost sm-btn-sm sm-modal-close-btn" type="button" data-close-task-modal aria-label="Sulje">&times;</button>
   </div>
 
-  <div class="sm-modal-path">
-    <?php if (!empty($ctx['env']['name'])): ?><span><?= sm_h((string)$ctx['env']['name']) ?></span><?php endif; ?>
-    <?php if (!empty($ctx['site']['name'])): ?><span><?= sm_h((string)$ctx['site']['name']) ?></span><?php endif; ?>
-    <?php if (!empty($ctx['zone']['name'])): ?><span><?= sm_h((string)$ctx['zone']['name']) ?></span><?php endif; ?>
+  <?php /* ── Hero-alue: kuva vasemmalla, tiedot oikealla ── */ ?>
+  <div class="sm-task-hero">
+    <div class="sm-task-hero-image">
+      <?php if ($taskImgUrl !== null): ?>
+        <img src="<?= sm_h($taskImgUrl) ?>" alt="<?= sm_h((string)$task['name']) ?>" class="sm-task-cover-img">
+      <?php else: ?>
+        <div class="sm-task-cover-placeholder" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span><?= sm_h(sm_t('no_task_image', $lang)) ?></span>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <div class="sm-task-hero-info">
+      <div class="sm-task-hero-path">
+        <?php if (!empty($ctx['env']['name'])): ?>
+          <span class="sm-task-path-chip"><?= sm_h((string)$ctx['env']['name']) ?></span>
+          <?php if (!empty($ctx['site']['name']) || !empty($ctx['zone']['name'])): ?><span class="sm-task-path-sep">›</span><?php endif; ?>
+        <?php endif; ?>
+        <?php if (!empty($ctx['site']['name'])): ?>
+          <span class="sm-task-path-chip"><?= sm_h((string)$ctx['site']['name']) ?></span>
+          <?php if (!empty($ctx['zone']['name'])): ?><span class="sm-task-path-sep">›</span><?php endif; ?>
+        <?php endif; ?>
+        <?php if (!empty($ctx['zone']['name'])): ?>
+          <span class="sm-task-path-chip"><?= sm_h((string)$ctx['zone']['name']) ?></span>
+        <?php endif; ?>
+      </div>
+
+      <?php if (!empty($task['description'])): ?>
+        <p class="sm-task-hero-desc"><?= sm_h((string)$task['description']) ?></p>
+      <?php endif; ?>
+
+      <?php /* ── Yhteenveto stat-kortit ── */ ?>
+      <div class="sm-modal-summary" role="region" aria-label="<?= sm_h(sm_t('summary', $lang)) ?>">
+        <?php if ($nAlways > 0): ?>
+        <div class="sm-modal-stat sm-modal-stat-mandatory">
+          <span class="sm-modal-stat-value"><?= $nAlways ?></span>
+          <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_always', $lang)) ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if ($nConditional > 0): ?>
+        <div class="sm-modal-stat sm-modal-stat-conditional">
+          <span class="sm-modal-stat-value"><?= $nConditional ?></span>
+          <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_conditional', $lang)) ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if ($nOther > 0): ?>
+        <div class="sm-modal-stat sm-modal-stat-other">
+          <span class="sm-modal-stat-value"><?= $nOther ?></span>
+          <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_other', $lang)) ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if ($nNotes + $nRisks > 0): ?>
+        <div class="sm-modal-stat sm-modal-stat-notes">
+          <span class="sm-modal-stat-value"><?= $nNotes + $nRisks ?></span>
+          <span class="sm-modal-stat-label"><?= sm_h(sm_t('notes_and_risks', $lang)) ?></span>
+        </div>
+        <?php endif; ?>
+      </div>
+
+      <?php if ($coverNote !== ''): ?>
+        <div class="sm-task-info-box">
+          <span class="sm-task-info-box-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </span>
+          <p><?= sm_h($coverNote) ?></p>
+        </div>
+      <?php endif; ?>
+    </div>
   </div>
 
-  <?php if (!empty($task['description'])): ?>
-    <p class="sm-modal-description"><?= sm_h((string)$task['description']) ?></p>
-  <?php endif; ?>
-
-  <?php /* ── Yhteenveto ── */ ?>
-  <div class="sm-modal-summary" role="region" aria-label="<?= sm_h(sm_t('summary', $lang)) ?>">
-    <?php if ($nAlways > 0): ?>
-    <div class="sm-modal-stat sm-modal-stat-mandatory">
-      <span class="sm-modal-stat-value"><?= $nAlways ?></span>
-      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_always', $lang)) ?></span>
-    </div>
-    <?php endif; ?>
-    <?php if ($nConditional > 0): ?>
-    <div class="sm-modal-stat sm-modal-stat-conditional">
-      <span class="sm-modal-stat-value"><?= $nConditional ?></span>
-      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_conditional', $lang)) ?></span>
-    </div>
-    <?php endif; ?>
-    <?php if ($nOther > 0): ?>
-    <div class="sm-modal-stat sm-modal-stat-other">
-      <span class="sm-modal-stat-value"><?= $nOther ?></span>
-      <span class="sm-modal-stat-label"><?= sm_h(sm_t('section_other', $lang)) ?></span>
-    </div>
-    <?php endif; ?>
-    <?php if ($nNotes + $nRisks > 0): ?>
-    <div class="sm-modal-stat sm-modal-stat-notes">
-      <span class="sm-modal-stat-value"><?= $nNotes + $nRisks ?></span>
-      <span class="sm-modal-stat-label"><?= sm_h(sm_t('notes_and_risks', $lang)) ?></span>
-    </div>
-    <?php endif; ?>
-  </div>
+  <?php /* ── Suojavarusteet hero-alueen jälkeen ── */ ?>
 
   <?php if (!empty($sections['always'])): ?>
     <section class="sm-result-section">

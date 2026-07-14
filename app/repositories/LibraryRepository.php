@@ -16,7 +16,8 @@ final class LibraryRepository extends BaseRepository
     public function allTasks(?int $envId = null): array
     {
         if ($envId !== null) {
-            $sql = 'SELECT DISTINCT t.id, t.name, t.work_type, t.category, t.description
+            $sql = 'SELECT DISTINCT t.id, t.name, t.work_type, t.category, t.description,
+                           t.cover_image_path, t.cover_note
                     FROM ppe_tasks t
                     INNER JOIN ppe_requirement_rules rr ON rr.task_id = t.id AND rr.environment_id = ? AND rr.status = \'published\'
                     WHERE t.is_active = 1 ORDER BY t.name';
@@ -27,7 +28,7 @@ final class LibraryRepository extends BaseRepository
                 return $rows;
             }
         }
-        return $this->pdo->query('SELECT id, name, work_type, category, description FROM ppe_tasks WHERE is_active = 1 ORDER BY name')->fetchAll() ?: [];
+        return $this->pdo->query('SELECT id, name, work_type, category, description, cover_image_path, cover_note FROM ppe_tasks WHERE is_active = 1 ORDER BY name')->fetchAll() ?: [];
     }
 
     public function allPpeItems(): array
@@ -53,7 +54,7 @@ final class LibraryRepository extends BaseRepository
 
     public function findTask(int $id): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT id, name, work_type, category, description FROM ppe_tasks WHERE id = ? AND is_active = 1');
+        $stmt = $this->pdo->prepare('SELECT id, name, work_type, category, description, cover_image_path, cover_note FROM ppe_tasks WHERE id = ? AND is_active = 1');
         $stmt->execute([$id]);
         $row = $stmt->fetch();
         return $row ?: null;
@@ -77,22 +78,28 @@ final class LibraryRepository extends BaseRepository
         $stmt->execute([$id]);
     }
 
-    public function upsertTask(string $name, string $category, string $workType = 'task'): void
+    public function upsertTask(string $name, string $category, string $workType = 'task', string $description = ''): void
     {
-        $stmt = $this->pdo->prepare('INSERT INTO ppe_tasks (name, work_type, category, is_active, created_at) VALUES (?, ?, ?, 1, NOW()) ON DUPLICATE KEY UPDATE category = VALUES(category), work_type = VALUES(work_type), is_active = 1');
-        $stmt->execute([$name, $workType, $category]);
+        $stmt = $this->pdo->prepare('INSERT INTO ppe_tasks (name, work_type, category, description, is_active, created_at) VALUES (?, ?, ?, ?, 1, NOW()) ON DUPLICATE KEY UPDATE category = VALUES(category), work_type = VALUES(work_type), description = VALUES(description), is_active = 1');
+        $stmt->execute([$name, $workType, $category, $description ?: null]);
     }
 
-    public function updateTask(int $id, string $name, string $category, string $workType = 'task'): void
+    public function updateTask(int $id, string $name, string $category, string $workType = 'task', string $description = '', string $coverNote = ''): void
     {
-        $stmt = $this->pdo->prepare('UPDATE ppe_tasks SET name = ?, category = ?, work_type = ? WHERE id = ?');
-        $stmt->execute([$name, $category, $workType, $id]);
+        $stmt = $this->pdo->prepare('UPDATE ppe_tasks SET name = ?, category = ?, work_type = ?, description = ?, cover_note = ? WHERE id = ?');
+        $stmt->execute([$name, $category, $workType, $description ?: null, $coverNote ?: null, $id]);
     }
 
     public function archiveTask(int $id): void
     {
         $stmt = $this->pdo->prepare('UPDATE ppe_tasks SET is_active = 0 WHERE id = ?');
         $stmt->execute([$id]);
+    }
+
+    public function updateTaskCoverImage(int $id, string $imagePath): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE ppe_tasks SET cover_image_path = ? WHERE id = ?');
+        $stmt->execute([$imagePath, $id]);
     }
 
     public function upsertPpeItem(string $code, string $name, string $category, string $icon, string $itemClass = 'personal_protection', string $standardRef = ''): void

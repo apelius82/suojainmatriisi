@@ -103,4 +103,5 @@ return [
     'summary'               => ['fi' => 'Yhteenveto', 'sv' => 'Sammanfattning', 'en' => 'Summary', 'it' => 'Riepilogo', 'el' => 'Περίληψη'],
     'notes'                 => ['fi' => 'Huomio', 'sv' => 'Notering', 'en' => 'Note', 'it' => 'Nota', 'el' => 'Σημείωση'],
     'details'               => ['fi' => 'Lisätiedot', 'sv' => 'Mer info', 'en' => 'Details', 'it' => 'Dettagli', 'el' => 'Λεπτομέρειες'],
+    'no_task_image'         => ['fi' => 'Ei kuvaa', 'sv' => 'Ingen bild', 'en' => 'No image', 'it' => 'Nessuna immagine', 'el' => 'Δεν υπάρχει εικόνα'],
 ];
