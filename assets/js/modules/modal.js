@@ -24,10 +24,9 @@ export function initModalDialogs(selector = '.sm-modal') {
 
   document.querySelectorAll(selector).forEach((dialog) => {
     dialog.addEventListener('click', (event) => {
-      const rect = dialog.getBoundingClientRect();
-      const inside = event.clientX >= rect.left && event.clientX <= rect.right
-        && event.clientY >= rect.top && event.clientY <= rect.bottom;
-      if (!inside) closeModal(dialog);
+      if (event.target === dialog) {
+        closeModal(dialog);
+      }
     });
   });
 }
