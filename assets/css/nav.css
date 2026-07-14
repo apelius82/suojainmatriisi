@@ -3,7 +3,6 @@
   position: sticky; top: 0; z-index: 1000;
   background: #0f172a; color: #fff;
   box-shadow: 0 2px 12px rgba(0,0,0,.25);
-  -webkit-transform: translateZ(0); transform: translateZ(0);
 }
 .sm-nav-inner {
   max-width: 1320px; margin: 0 auto;

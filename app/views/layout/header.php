@@ -47,7 +47,7 @@
         </a>
       </div>
 
-      <button class="sm-nav-menu-toggle" aria-expanded="false" aria-controls="sm-main-nav" aria-label="Valikko" onclick="(function(btn){var nav=document.getElementById('sm-main-nav');var open=nav.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false');})(this)">☰</button>
+      <button class="sm-nav-menu-toggle" aria-expanded="false" aria-controls="sm-main-nav" aria-label="Valikko">☰</button>
     <?php endif; ?>
 
   </div>
