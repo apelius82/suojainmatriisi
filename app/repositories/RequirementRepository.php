@@ -123,7 +123,18 @@ final class RequirementRepository extends BaseRepository
         return $count;
     }
 
-    /** Johtaa scope_type-arvon työmaa- ja ympäristötunnisteiden perusteella. */
+    /**
+     * Johtaa scope_type-arvon työmaa- ja ympäristötunnisteiden perusteella.
+     *
+     * Hierarkia:
+     *  - siteId > 0  → 'site_task'  (työmaakohtainen tehtäväsääntö)
+     *  - envId  > 0  → 'task'       (ympäristökohtainen tehtäväsääntö)
+     *  - muutoin     → 'global'     (globaali/kaikille yhteinen sääntö)
+     *
+     * site_task on suppeampi kuin task, joka on suppeampi kuin global.
+     * Resolver soveltaa säännöt laajimmasta suppeimpaan, jolloin tarkempi
+     * scope voi ylikirjoittaa yleisemmän säännön.
+     */
     public static function deriveScopeType(int $siteId, int $envId): string
     {
         if ($siteId > 0) {

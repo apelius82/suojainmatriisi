@@ -56,8 +56,16 @@ function sm_h(string $value): string
 }
 
 /**
- * Renderöi PPE-kortti tulossivulle (paranneltu versio kuvalla).
+ * Tarkistaa, onko nykyisellä kirjautuneella käyttäjällä hallintaroolit.
+ * Käytetään hallintatoimintojen näyttämiseen käyttöliittymässä.
  */
+function sm_is_admin(): bool
+{
+    $role = sm_current_user()['role_slug'] ?? '';
+    return in_array($role, ['admin', 'manager', 'hseq_reviewer', 'hseq_approver', 'site_manager'], true);
+}
+
+
 function sm_render_ppe_card(array $card, string $lang = 'fi'): string
 {
     $rule       = $card['rule'];
@@ -100,7 +108,7 @@ function sm_render_ppe_card(array $card, string $lang = 'fi'): string
     }
     $out .= '</div>';
     if ($condition !== '') {
-        $out .= '<p class="sm-ppe-condition"><span aria-hidden="true">⚠</span> ' . sm_h($condition) . '</p>';
+        $out .= '<p class="sm-ppe-condition"><span aria-hidden="true">⚠</span><span class="sm-visually-hidden">' . sm_t('label_condition', $lang) . '</span> ' . sm_h($condition) . '</p>';
     } elseif ($notes !== '') {
         $out .= '<p class="sm-ppe-condition">' . sm_h($notes) . '</p>';
     }

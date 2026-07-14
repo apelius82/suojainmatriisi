@@ -10,7 +10,7 @@ $imgCfg    = require __DIR__ . '/../../app/config/ppe_image.php';
 $extToMime = $imgCfg['ext_to_mime'];
 
 // Rakenna tiedostonimen validointireges dynaamisesti sallituista päätteistä
-$extPattern = implode('|', array_map('preg_quote', array_keys($extToMime), array_fill(0, count($extToMime), '/')));
+$extPattern = implode('|', array_map(fn($k) => preg_quote($k, '/'), array_keys($extToMime)));
 $file = basename((string)($_GET['f'] ?? ''));
 if ($file === '' || !preg_match('/^ppe_\d+_[0-9a-f]+\.(' . $extPattern . ')$/', $file)) {
     http_response_code(400);

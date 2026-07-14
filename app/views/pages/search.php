@@ -11,8 +11,7 @@ $ctxEnv  = $result['context']['env']  ?? null;
 $ctxSite = $result['context']['site'] ?? null;
 $ctxZone = $result['context']['zone'] ?? null;
 $ctxTask = $result['context']['task'] ?? null;
-$userRole = sm_current_user()['role_slug'] ?? '';
-$isAdmin  = in_array($userRole, ['admin','manager','hseq_reviewer','hseq_approver','site_manager'], true);
+$isAdmin  = sm_is_admin();
 ?>
 
 <div class="sm-page-header">

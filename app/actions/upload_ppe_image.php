@@ -26,6 +26,9 @@ if ($file['size'] > $maxBytes) {
 // Tarkista MIME finfo:llä (ei luota $_FILES['type'] eikä tiedostopäätteeseen)
 $finfo    = new finfo(FILEINFO_MIME_TYPE);
 $mimeType = $finfo->file($file['tmp_name']);
+if ($mimeType === false) {
+    sm_redirect('/index.php?page=dashboard&tab=ppe&error=upload_failed');
+}
 if (!array_key_exists($mimeType, $mimeToExt)) {
     sm_redirect('/index.php?page=dashboard&tab=ppe&error=invalid_type');
 }

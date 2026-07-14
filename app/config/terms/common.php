@@ -6,4 +6,5 @@ return [
     'search_worker' => ['fi' => 'Työntekijähaku', 'sv' => 'Arbetarsök', 'en' => 'Worker search', 'it' => 'Ricerca lavoratore', 'el' => 'Αναζήτηση εργαζομένου'],
     'print' => ['fi' => 'Tulosta', 'sv' => 'Skriv ut', 'en' => 'Print', 'it' => 'Stampa', 'el' => 'Εκτύπωση'],
     'language' => ['fi' => 'Kieli', 'sv' => 'Språk', 'en' => 'Language', 'it' => 'Lingua', 'el' => 'Γλώσσα'],
+    'label_condition' => ['fi' => 'Ehto:', 'sv' => 'Villkor:', 'en' => 'Condition:', 'it' => 'Condizione:', 'el' => 'Συνθήκη:'],
 ];
