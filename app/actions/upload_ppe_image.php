@@ -9,9 +9,14 @@ if ($ppeId < 1) {
     sm_redirect('/index.php?page=dashboard&tab=ppe&error=invalid_id');
 }
 
-$allowedMime  = ['image/svg+xml', 'image/jpeg', 'image/png', 'image/webp'];
-$allowedExts  = ['svg', 'jpg', 'jpeg', 'png', 'webp'];
-$maxBytes     = 2 * 1024 * 1024; // 2 MB
+// MIME type → canonical extension mapping (extension derived from validated MIME, not filename)
+$mimeToExt = [
+    'image/svg+xml' => 'svg',
+    'image/jpeg'    => 'jpg',
+    'image/png'     => 'png',
+    'image/webp'    => 'webp',
+];
+$maxBytes = 2 * 1024 * 1024; // 2 MB
 
 $file = $_FILES['ppe_image'] ?? null;
 if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -22,17 +27,15 @@ if ($file['size'] > $maxBytes) {
     sm_redirect('/index.php?page=dashboard&tab=ppe&error=too_large');
 }
 
-// Tarkista MIME finfo:llä (ei luota $_FILES['type'])
+// Tarkista MIME finfo:llä (ei luota $_FILES['type'] eikä tiedostopäätteeseen)
 $finfo    = new finfo(FILEINFO_MIME_TYPE);
 $mimeType = $finfo->file($file['tmp_name']);
-if (!in_array($mimeType, $allowedMime, true)) {
+if (!array_key_exists($mimeType, $mimeToExt)) {
     sm_redirect('/index.php?page=dashboard&tab=ppe&error=invalid_type');
 }
 
-$ext      = strtolower(pathinfo((string)$file['name'], PATHINFO_EXTENSION));
-if (!in_array($ext, $allowedExts, true)) {
-    sm_redirect('/index.php?page=dashboard&tab=ppe&error=invalid_ext');
-}
+// Pääte tulee validoidusta MIME-tyypistä, ei käyttäjän tiedostonnimestä
+$ext = $mimeToExt[$mimeType];
 
 $storageDir = __DIR__ . '/../../storage/ppe_images';
 if (!is_dir($storageDir)) {

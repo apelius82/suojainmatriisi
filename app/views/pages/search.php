@@ -136,7 +136,7 @@ $isAdmin  = in_array($userRole, ['admin','manager','hseq_reviewer','hseq_approve
     <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=rules"
        class="sm-btn sm-btn-secondary sm-btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Lisää varuste tehtävälle
+      <?= sm_h(sm_t('add_equipment_to_task', $lang)) ?>
     </a>
     <?php endif; ?>
   </div>

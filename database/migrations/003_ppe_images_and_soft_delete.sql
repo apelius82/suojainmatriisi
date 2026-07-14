@@ -3,7 +3,7 @@
 
 -- 1. Varustekuvat: image_path ppe_items-tauluun
 ALTER TABLE ppe_items
-  ADD COLUMN IF NOT EXISTS image_path VARCHAR(512) NULL AFTER standard_ref;
+  ADD COLUMN IF NOT EXISTS image_path VARCHAR(512) NULL;
 
 -- 2. Luodaan PPE-kuvien tallennushakemisto -merkintä (ei SQL-toimenpidettä, tehdään storage-tasolla)
 

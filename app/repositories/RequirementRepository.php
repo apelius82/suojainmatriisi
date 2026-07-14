@@ -115,15 +115,21 @@ final class RequirementRepository extends BaseRepository
         $count = 0;
         foreach ($taskIds as $taskId) {
             $rule = $baseRule;
-            $rule['task_id'] = (int)$taskId;
-            $rule['scope_type'] = 'site_task';
-            if (!empty($rule['environment_id']) && empty($rule['site_id'])) {
-                $rule['scope_type'] = 'task';
-            }
+            $rule['task_id']    = (int)$taskId;
+            $rule['scope_type'] = self::deriveScopeType((int)$baseRule['site_id'], (int)$baseRule['environment_id']);
             $this->addRule($rule, $userId);
             $count++;
         }
         return $count;
+    }
+
+    /** Johtaa scope_type-arvon työmaa- ja ympäristötunnisteiden perusteella. */
+    public static function deriveScopeType(int $siteId, int $envId): string
+    {
+        if ($siteId > 0) {
+            return 'site_task';
+        }
+        return 'task';
     }
 
     public function findRule(int $id): ?array

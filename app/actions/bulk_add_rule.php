@@ -25,12 +25,7 @@ if ($ppeId < 1) {
 
 // Jos ei valittuja tehtäviä, hae kaikki työmaan / ympäristön tehtävät
 if (empty($taskIds)) {
-    if ($siteId > 0) {
-        // Hae kaikki tehtävät joilla on sääntöjä tässä työmaaympäristössä
-        $allTasks = $library->allTasks($envId > 0 ? $envId : null);
-    } else {
-        $allTasks = $library->allTasks($envId > 0 ? $envId : null);
-    }
+    $allTasks = $library->allTasks($envId > 0 ? $envId : null);
     $taskIds = array_column($allTasks, 'id');
 }
 
@@ -38,12 +33,7 @@ if (empty($taskIds)) {
     sm_redirect('/index.php?page=dashboard&tab=rules&error=no_tasks');
 }
 
-$scopeType = 'site_task';
-if ($siteId < 1 && $envId > 0) {
-    $scopeType = 'task';
-} elseif ($siteId < 1 && $envId < 1) {
-    $scopeType = 'task';
-}
+$scopeType = RequirementRepository::deriveScopeType($siteId, $envId);
 
 $baseRule = [
     'scope_type'         => $scopeType,

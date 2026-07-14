@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../app/includes/bootstrap.php';
 sm_require_login();
 
 $file = basename((string)($_GET['f'] ?? ''));
-if ($file === '' || !preg_match('/^ppe_\d+_[0-9a-f]+\.(svg|jpg|jpeg|png|webp)$/i', $file)) {
+if ($file === '' || !preg_match('/^ppe_\d+_[0-9a-f]+\.(svg|jpg|png|webp)$/', $file)) {
     http_response_code(400);
     exit;
 }
@@ -29,5 +29,8 @@ $mime = $mimeMap[$ext] ?? 'application/octet-stream';
 
 header('Content-Type: ' . $mime);
 header('Cache-Control: private, max-age=86400');
-header('Content-Length: ' . filesize($path));
+$fileSize = filesize($path);
+if ($fileSize !== false) {
+    header('Content-Length: ' . $fileSize);
+}
 readfile($path);
