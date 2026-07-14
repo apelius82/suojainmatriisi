@@ -3,19 +3,33 @@ declare(strict_types=1);
 
 final class RequirementRepository extends BaseRepository
 {
-    public function listRules(?string $status = 'published'): array
+    public function listRules(?string $status = 'published', ?int $envId = null): array
     {
-        $sql = 'SELECT rr.id, rr.scope_type, rr.site_id, rr.task_id, rr.ppe_item_id, rr.requirement_level, rr.status, rr.version_no, rr.notes, s.name AS site_name, t.name AS task_name, p.name AS ppe_name
+        $sql = 'SELECT rr.id, rr.scope_type, rr.environment_id, rr.site_id, rr.zone_id, rr.task_id,
+                       rr.ppe_item_id, rr.requirement_level, rr.status, rr.version_no, rr.notes,
+                       rr.condition_text, rr.effective_date, rr.change_description,
+                       e.name AS env_name, s.name AS site_name, z.name AS zone_name,
+                       t.name AS task_name, p.name AS ppe_name, p.item_class AS ppe_class
                 FROM ppe_requirement_rules rr
+                LEFT JOIN ppe_environments e ON e.id = rr.environment_id
                 LEFT JOIN ppe_sites s ON s.id = rr.site_id
+                LEFT JOIN ppe_zones z ON z.id = rr.zone_id
                 LEFT JOIN ppe_tasks t ON t.id = rr.task_id
                 JOIN ppe_items p ON p.id = rr.ppe_item_id';
         $params = [];
+        $where  = [];
         if ($status !== null) {
-            $sql .= ' WHERE rr.status = ?';
+            $where[]  = 'rr.status = ?';
             $params[] = $status;
         }
-        $sql .= ' ORDER BY rr.scope_type, s.name, t.name, p.name';
+        if ($envId !== null) {
+            $where[]  = 'rr.environment_id = ?';
+            $params[] = $envId;
+        }
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY rr.scope_type, e.name, s.name, z.name, t.name, p.name';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll() ?: [];
@@ -23,16 +37,26 @@ final class RequirementRepository extends BaseRepository
 
     public function addRule(array $rule, int $userId): int
     {
-        $stmt = $this->pdo->prepare('INSERT INTO ppe_requirement_rules (scope_type, site_id, task_id, ppe_item_id, requirement_level, status, version_no, notes, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())');
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO ppe_requirement_rules
+               (scope_type, environment_id, site_id, zone_id, task_id,
+                ppe_item_id, requirement_level, status, version_no, notes, condition_text,
+                change_description, created_by, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
+        );
         $stmt->execute([
             $rule['scope_type'],
+            $rule['environment_id'] ?: null,
             $rule['site_id'] ?: null,
+            $rule['zone_id'] ?: null,
             $rule['task_id'] ?: null,
             $rule['ppe_item_id'],
             $rule['requirement_level'],
             $rule['status'],
             1,
             $rule['notes'] ?? null,
+            $rule['condition_text'] ?? null,
+            $rule['change_description'] ?? null,
             $userId,
         ]);
 
