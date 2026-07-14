@@ -1,3 +1,8 @@
+/**
+ * Initializes modal dialog open/close behavior for card-based UI.
+ * Binds [data-modal-open] triggers, [data-modal-close] buttons and backdrop close.
+ * @param {string} selector CSS selector for dialog elements.
+ */
 export function initModalDialogs(selector = '.sm-modal') {
   const openers = document.querySelectorAll('[data-modal-open]');
   if (!openers.length) return;

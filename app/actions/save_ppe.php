@@ -36,7 +36,7 @@ if ($linkedLevel !== '') {
                     'scope_type'         => RequirementRepository::deriveScopeType($linkSiteId, $linkEnvId),
                     'environment_id'     => $linkEnvId,
                     'site_id'            => $linkSiteId,
-                    // bulkAddRule johtaa task-kohtaiset scope-tyypit (site_task/task), joten zone ei ole mukana tässä haarassa
+                    // bulkAddRule derives task scopes (site_task/task), so zone is not used in this branch
                     'zone_id'            => 0,
                     'task_id'            => 0,
                     'ppe_item_id'        => $ppeId,

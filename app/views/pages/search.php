@@ -75,7 +75,7 @@ $hasFilter = ($selEnv > 0 || $selSite > 0);
 
 <section class="sm-result-section" aria-labelledby="search-task-cards-heading">
   <div class="sm-section-header">
-    <h2 class="sm-section-title" id="search-task-cards-heading">Tehtävät</h2>
+    <h2 class="sm-section-title" id="search-task-cards-heading"><?= sm_h(sm_t('tab_tasks', $lang)) ?></h2>
     <?php if ($hasFilter): ?>
       <span class="sm-badge sm-badge-published"><?= count($taskCards ?? []) ?></span>
     <?php endif; ?>
@@ -120,9 +120,9 @@ $hasFilter = ($selEnv > 0 || $selSite > 0);
               <?php if ($ctxZone): ?><span class="sm-context-chip"><?= sm_h((string)$ctxZone['name']) ?></span><?php endif; ?>
             </div>
             <div class="sm-task-post-stats">
-              <span class="sm-badge sm-badge-mandatory"><?= (int)$summary['always'] ?> pakollinen</span>
-              <span class="sm-badge sm-badge-conditional"><?= (int)$summary['conditional'] ?> tilanteen mukaan</span>
-              <span class="sm-badge sm-badge-published"><?= (int)$summary['other_safety'] ?> muu varuste</span>
+              <span class="sm-badge sm-badge-mandatory"><?= (int)$summary['always'] ?> <?= sm_h(sm_t('mandatory', $lang)) ?></span>
+              <span class="sm-badge sm-badge-conditional"><?= (int)$summary['conditional'] ?> <?= sm_h(sm_t('conditional', $lang)) ?></span>
+              <span class="sm-badge sm-badge-published"><?= (int)$summary['other_safety'] ?> <?= sm_h(sm_t('other_safety', $lang)) ?></span>
             </div>
           </button>
         </article>
@@ -213,7 +213,7 @@ $hasFilter = ($selEnv > 0 || $selSite > 0);
                   <?= sm_h(sm_t('add_equipment_to_task', $lang)) ?>
                 </a>
               <?php endif; ?>
-              <button type="button" class="sm-btn sm-btn-primary sm-btn-sm" data-modal-close>Sulje</button>
+              <button type="button" class="sm-btn sm-btn-primary sm-btn-sm" data-modal-close><?= sm_h(sm_t('close', $lang)) ?></button>
             </div>
           </div>
         </dialog>

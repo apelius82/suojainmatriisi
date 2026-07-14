@@ -545,7 +545,7 @@ foreach ($data['rules'] as $rule) {
                 </div>
 
                 <div class="sm-add-form-block" style="margin-top:.75rem">
-                  <h3>Missä tehtävissä tätä käytetään?</h3>
+                  <h3><?= sm_h(sm_t('ppe_usage_targets', $lang)) ?></h3>
                   <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=save_rule" class="sm-rule-form-grid">
                     <?= sm_csrf_field() ?>
                     <input type="hidden" name="scope_type" value="site_task">
@@ -607,9 +607,9 @@ foreach ($data['rules'] as $rule) {
                     </label>
                     <label>Vaatimustaso
                      <select name="requirement_level">
-                       <option value="mandatory">Pakollinen</option>
-                       <option value="conditional">Tilanteen mukaan</option>
-                       <option value="recommended">Suositeltava</option>
+                       <option value="mandatory"><?= sm_h(sm_t('mandatory', $lang)) ?></option>
+                       <option value="conditional"><?= sm_h(sm_t('conditional', $lang)) ?></option>
+                       <option value="recommended"><?= sm_h(sm_t('recommended', $lang)) ?></option>
                      </select>
                     </label>
                     <label class="sm-form-full">Huomio <input name="notes" autocomplete="off"></label>
@@ -664,9 +664,9 @@ foreach ($data['rules'] as $rule) {
         <label>Vaatimustaso liitokselle
           <select name="link_requirement_level">
             <option value="">— ei liitosta vielä —</option>
-            <option value="mandatory">Pakollinen</option>
-            <option value="conditional">Tilanteen mukaan</option>
-            <option value="recommended">Suositeltava</option>
+            <option value="mandatory"><?= sm_h(sm_t('mandatory', $lang)) ?></option>
+            <option value="conditional"><?= sm_h(sm_t('conditional', $lang)) ?></option>
+            <option value="recommended"><?= sm_h(sm_t('recommended', $lang)) ?></option>
           </select>
         </label>
         <label class="sm-form-full">Liitoksen huomio <input name="link_notes" autocomplete="off" placeholder="Lisätieto varusteen käytöstä"></label>
