@@ -74,5 +74,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('<?= sm_h(sm_base_url()) ?>/service-worker.js');
 }
 </script>
+<script src="<?= sm_h(sm_base_url()) ?>/assets/js/modules/nav.js"></script>
 </body>
 </html>
