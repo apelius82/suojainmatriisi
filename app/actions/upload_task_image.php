@@ -47,6 +47,16 @@ if (!move_uploaded_file($file['tmp_name'], $destPath)) {
     sm_redirect('/index.php?page=dashboard&tab=tasks&error=move_failed');
 }
 
+// Poista vanhan kansikuvan tiedosto, jos sellainen on olemassa
+$task = (new LibraryRepository($smPdo))->findTask($taskId);
+$oldImage = trim((string)($task['cover_image_path'] ?? ''));
+if ($oldImage !== '' && $oldImage !== $safeName) {
+    $oldPath = $storageDir . '/' . basename($oldImage);
+    if (is_file($oldPath)) {
+        @unlink($oldPath);
+    }
+}
+
 (new LibraryRepository($smPdo))->updateTaskCoverImage($taskId, $safeName);
 (new AuditRepository($smPdo))->add(
     (int)sm_current_user()['id'],

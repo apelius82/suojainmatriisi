@@ -5,6 +5,10 @@ if (!in_array($activeTab, $validTabs, true)) $activeTab = 'environments';
 $lang = $_SESSION['sm_lang'] ?? 'fi';
 $editId = (int)($_GET['edit_id'] ?? 0);
 
+// Kuva-accept-attribuutti (ladataan config-tiedostosta)
+$_imgCfg = require __DIR__ . '/../../app/config/ppe_image.php';
+$_imgAccept = implode(',', array_keys($_imgCfg['mime_to_ext']));
+
 // Notifikaatiot
 $bulkAdded = (int)($_GET['bulk_added'] ?? 0);
 $errMsg = match ($_GET['error'] ?? '') {
@@ -410,7 +414,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                     enctype="multipart/form-data" class="sm-inline-form" style="margin-top:.5rem">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="task_id" value="<?= $taskId ?>">
-                <input type="file" name="task_image" accept="image/svg+xml,image/png,image/jpeg,image/webp" class="sm-file-input">
+                <input type="file" name="task_image" accept="<?= sm_h($_imgAccept) ?>" class="sm-file-input">
                 <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Lataa kuva</button>
               </form>
               <p class="sm-hint">Sallittu: SVG, PNG, JPG, WEBP – max 2 MB</p>
@@ -531,7 +535,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                     enctype="multipart/form-data" class="sm-inline-form" style="margin-top:.5rem">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="ppe_item_id" value="<?= $itemId ?>">
-                <input type="file" name="ppe_image" accept="image/svg+xml,image/png,image/jpeg,image/webp" class="sm-file-input">
+                <input type="file" name="ppe_image" accept="<?= sm_h($_imgAccept) ?>" class="sm-file-input">
                 <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Lataa kuva</button>
               </form>
               <p class="sm-hint">Sallittu: SVG, PNG, JPG, WEBP – max 2 MB</p>
