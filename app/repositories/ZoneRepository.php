@@ -38,4 +38,16 @@ final class ZoneRepository extends BaseRepository
         );
         $stmt->execute([$siteId, $parentId, $code, $name, $description]);
     }
+
+    public function update(int $id, int $siteId, string $code, string $name, string $description = ''): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE ppe_zones SET site_id = ?, code = ?, name = ?, description = ? WHERE id = ?');
+        $stmt->execute([$siteId, $code, $name, $description, $id]);
+    }
+
+    public function archive(int $id): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE ppe_zones SET is_active = 0 WHERE id = ?');
+        $stmt->execute([$id]);
+    }
 }

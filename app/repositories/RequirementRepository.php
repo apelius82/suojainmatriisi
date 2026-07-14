@@ -76,6 +76,76 @@ final class RequirementRepository extends BaseRepository
         }
     }
 
+    public function updateRule(int $id, array $rule, int $userId): void
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE ppe_requirement_rules SET
+               scope_type = ?, environment_id = ?, site_id = ?, zone_id = ?, task_id = ?,
+               ppe_item_id = ?, requirement_level = ?, notes = ?, condition_text = ?,
+               change_description = ?, version_no = version_no + 1, updated_at = NOW()
+             WHERE id = ?'
+        );
+        $stmt->execute([
+            $rule['scope_type'],
+            $rule['environment_id'] ?: null,
+            $rule['site_id'] ?: null,
+            $rule['zone_id'] ?: null,
+            $rule['task_id'] ?: null,
+            $rule['ppe_item_id'],
+            $rule['requirement_level'],
+            $rule['notes'] ?? null,
+            $rule['condition_text'] ?? null,
+            $rule['change_description'] ?? null,
+            $id,
+        ]);
+        $updated = $this->findRule($id);
+        if ($updated) {
+            $this->saveVersion($id, (int)$updated['version_no'], $updated['status'], $updated['requirement_level'], $userId, $rule['change_description'] ?? null);
+        }
+    }
+
+    public function archiveRule(int $ruleId, int $userId): void
+    {
+        $this->changeStatus($ruleId, 'archived', $userId);
+    }
+
+    /** Massalisäys: lisää sama vaatimus usealle tehtävälle samassa työmaa/alue/ympäristö-hakuehdossa */
+    public function bulkAddRule(array $baseRule, array $taskIds, int $userId): int
+    {
+        $count = 0;
+        foreach ($taskIds as $taskId) {
+            $rule = $baseRule;
+            $rule['task_id']    = (int)$taskId;
+            $rule['scope_type'] = self::deriveScopeType((int)$baseRule['site_id'], (int)$baseRule['environment_id']);
+            $this->addRule($rule, $userId);
+            $count++;
+        }
+        return $count;
+    }
+
+    /**
+     * Johtaa scope_type-arvon työmaa- ja ympäristötunnisteiden perusteella.
+     *
+     * Hierarkia:
+     *  - siteId > 0  → 'site_task'  (työmaakohtainen tehtäväsääntö)
+     *  - envId  > 0  → 'task'       (ympäristökohtainen tehtäväsääntö)
+     *  - muutoin     → 'global'     (globaali/kaikille yhteinen sääntö)
+     *
+     * site_task on suppeampi kuin task, joka on suppeampi kuin global.
+     * Resolver soveltaa säännöt laajimmasta suppeimpaan, jolloin tarkempi
+     * scope voi ylikirjoittaa yleisemmän säännön.
+     */
+    public static function deriveScopeType(int $siteId, int $envId): string
+    {
+        if ($siteId > 0) {
+            return 'site_task';
+        }
+        if ($envId > 0) {
+            return 'task';
+        }
+        return 'global';
+    }
+
     public function findRule(int $id): ?array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM ppe_requirement_rules WHERE id = ?');

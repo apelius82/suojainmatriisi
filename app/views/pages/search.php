@@ -11,6 +11,7 @@ $ctxEnv  = $result['context']['env']  ?? null;
 $ctxSite = $result['context']['site'] ?? null;
 $ctxZone = $result['context']['zone'] ?? null;
 $ctxTask = $result['context']['task'] ?? null;
+$isAdmin  = sm_is_admin();
 ?>
 
 <div class="sm-page-header">
@@ -103,37 +104,40 @@ $ctxTask = $result['context']['task'] ?? null;
 
 <?php if ($hasSearch && $result !== null): ?>
 
+<!-- Breadcrumb -->
+<nav class="sm-breadcrumb" aria-label="Polku">
+  <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=search" class="sm-breadcrumb-link"><?= sm_h(sm_t('nav_search', $lang)) ?></a>
+  <?php if ($ctxEnv): ?><span aria-hidden="true"> › </span><span><?= sm_h((string)$ctxEnv['name']) ?></span><?php endif; ?>
+  <?php if ($ctxSite): ?><span aria-hidden="true"> › </span><span><?= sm_h((string)$ctxSite['name']) ?></span><?php endif; ?>
+  <?php if ($ctxZone): ?><span aria-hidden="true"> › </span><span><?= sm_h((string)$ctxZone['name']) ?></span><?php endif; ?>
+  <?php if ($ctxTask): ?><span aria-hidden="true"> › </span><strong><?= sm_h((string)$ctxTask['name']) ?></strong><?php endif; ?>
+</nav>
+
 <!-- Otsikkokortti (kontekstiyhteenveto) -->
 <div class="sm-result-header-card">
   <div class="sm-result-context">
-    <?php if ($ctxEnv): ?>
-      <div class="sm-result-context-row">
-        <span class="sm-context-label"><?= sm_h(sm_t('environment', $lang)) ?></span>
-        <span class="sm-context-value"><?= sm_h((string)$ctxEnv['name']) ?></span>
-      </div>
-    <?php endif; ?>
-    <?php if ($ctxSite): ?>
-      <div class="sm-result-context-row">
-        <span class="sm-context-label"><?= sm_h(sm_t('select_site', $lang)) ?></span>
-        <span class="sm-context-value"><?= sm_h((string)$ctxSite['name']) ?></span>
-      </div>
-    <?php endif; ?>
-    <?php if ($ctxZone): ?>
-      <div class="sm-result-context-row">
-        <span class="sm-context-label"><?= sm_h(sm_t('zone', $lang)) ?></span>
-        <span class="sm-context-value"><?= sm_h((string)$ctxZone['name']) ?></span>
-      </div>
-    <?php endif; ?>
-    <?php if ($ctxTask): ?>
-      <div class="sm-result-context-row">
-        <span class="sm-context-label"><?= sm_h(sm_t('select_task', $lang)) ?></span>
-        <span class="sm-context-value sm-context-task"><?= sm_h((string)$ctxTask['name']) ?></span>
-      </div>
-    <?php endif; ?>
+    <div class="sm-result-context-task-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <?php if ($ctxTask): ?><span><?= sm_h((string)$ctxTask['name']) ?></span><?php endif; ?>
+    </div>
+    <div class="sm-result-context-meta">
+      <?php if ($ctxEnv): ?><span class="sm-context-chip"><?= sm_h((string)$ctxEnv['name']) ?></span><?php endif; ?>
+      <?php if ($ctxSite): ?><span class="sm-context-chip"><?= sm_h((string)$ctxSite['name']) ?></span><?php endif; ?>
+      <?php if ($ctxZone): ?><span class="sm-context-chip"><?= sm_h((string)$ctxZone['name']) ?></span><?php endif; ?>
+    </div>
   </div>
-  <div class="sm-official-notice" role="note">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    <?= sm_h(sm_t('official_only', $lang)) ?>
+  <div style="display:flex;flex-direction:column;gap:.6rem;align-items:flex-end;flex-shrink:0">
+    <div class="sm-official-notice" role="note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <?= sm_h(sm_t('official_only', $lang)) ?>
+    </div>
+    <?php if ($isAdmin && $selTask > 0): ?>
+    <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=rules"
+       class="sm-btn sm-btn-secondary sm-btn-sm" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <?= sm_h(sm_t('add_equipment_to_task', $lang)) ?>
+    </a>
+    <?php endif; ?>
   </div>
 </div>
 

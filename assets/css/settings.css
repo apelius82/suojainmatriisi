@@ -148,3 +148,80 @@
 
 /* Card warning variant */
 .sm-card-warning { border-color: #f59e0b; background: var(--sm-warn-bg); }
+
+/* ===== INLINE EDIT FORM ===== */
+.sm-inline-edit-form {
+  background: var(--sm-surface-2);
+  border-top: 2px solid var(--sm-accent);
+  padding: 1rem 1.25rem 1.25rem;
+  animation: sm-slide-in .18s ease;
+}
+@keyframes sm-slide-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+
+/* ===== CODE PILL ===== */
+.sm-code-pill {
+  display: inline-block; padding: .1rem .45rem;
+  background: var(--sm-surface-2); border: 1px solid var(--sm-border);
+  border-radius: var(--sm-radius-sm); font-family: monospace;
+  font-size: .78rem; color: var(--sm-muted); vertical-align: middle;
+}
+
+/* ===== DANGER GHOST BUTTON ===== */
+.sm-btn-danger-ghost { color: var(--sm-danger); }
+.sm-btn-danger-ghost:hover { background: var(--sm-danger-bg); color: var(--sm-danger); }
+
+/* ===== HINT TEXT ===== */
+.sm-hint { color: var(--sm-muted); font-size: .8rem; margin: .3rem 0 0; }
+
+/* ===== PPE IMAGE UPLOAD ===== */
+.sm-ppe-img-upload {
+  margin-top: 1rem; padding-top: 1rem;
+  border-top: 1px dashed var(--sm-border-solid);
+}
+.sm-ppe-img-upload strong { display: block; font-size: .9rem; color: var(--sm-dark); margin-bottom: .3rem; }
+.sm-file-input { font-size: .85rem; }
+
+/* ===== NOTIFICATION ALERTS ===== */
+.sm-alert { padding: .9rem 1rem; border-radius: var(--sm-radius-sm); margin-bottom: 1rem; font-size: .9rem; display: flex; align-items: center; gap: .5rem; }
+.sm-alert-warn { background: var(--sm-warn-bg); border: 1px solid #fdba74; color: var(--sm-warn); }
+.sm-alert-info { background: var(--sm-info-bg); border: 1px solid #93c5fd; color: var(--sm-info); }
+.sm-alert-danger { background: var(--sm-danger-bg); border: 1px solid #fca5a5; color: var(--sm-danger); }
+
+/* ===== LIST ROW IMPROVEMENTS ===== */
+.sm-list-row-actions .sm-btn { min-height: 36px; min-width: 36px; }
+
+/* ===== RULE FORM GRID RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .sm-inline-edit-form { padding: .75rem; }
+  .sm-ppe-img-upload { padding-top: .75rem; }
+}
+
+/* ===== BREADCRUMB ===== */
+.sm-breadcrumb {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .25rem .15rem;
+  font-size: .82rem; color: var(--sm-muted);
+  margin-bottom: 1rem; padding: .4rem 0;
+}
+.sm-breadcrumb-link { color: var(--sm-accent-dark); text-decoration: underline; }
+.sm-breadcrumb-link:hover { color: var(--sm-dark); }
+.sm-breadcrumb strong { color: var(--sm-dark); }
+
+/* ===== RESULT HEADER CARD IMPROVEMENTS ===== */
+.sm-result-context-task-title {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: 1.2rem; font-weight: 700; color: var(--sm-accent);
+  margin-bottom: .5rem;
+}
+.sm-result-context-meta { display: flex; flex-wrap: wrap; gap: .4rem; }
+.sm-context-chip {
+  display: inline-flex; align-items: center;
+  padding: .2rem .55rem; border-radius: var(--sm-radius-pill);
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.75);
+  font-size: .78rem; font-weight: 600; border: 1px solid rgba(255,255,255,.15);
+}
+
+/* ===== PPE IMG ===== */
+.sm-ppe-img { border-radius: 8px; object-fit: contain; background: var(--sm-surface-2); }
+
+/* ===== SECTION HEADER BADGES ===== */
+.sm-section-badge-risks { background: #fff7ed; color: #c2410c; }
