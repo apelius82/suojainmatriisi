@@ -40,8 +40,13 @@ require_once __DIR__ . '/../repositories/RequirementRepository.php';
 require_once __DIR__ . '/../repositories/AuditRepository.php';
 
 $smPdo = Database::connect($smConfig['db']);
-if (empty($_SESSION['sm_schema_ready'])) {
+$schemaMarker = __DIR__ . '/../../storage/logs/.schema_ready';
+$latestSchemaFile = 0;
+foreach (array_merge(glob(__DIR__ . '/../../database/migrations/*.sql') ?: [], glob(__DIR__ . '/../../database/seeds/*.sql') ?: []) as $schemaFile) {
+    $latestSchemaFile = max($latestSchemaFile, (int)filemtime($schemaFile));
+}
+if (!is_file($schemaMarker) || (int)filemtime($schemaMarker) < $latestSchemaFile) {
     MigrationService::migrate($smPdo, __DIR__ . '/../../database/migrations');
     MigrationService::seed($smPdo, __DIR__ . '/../../database/seeds');
-    $_SESSION['sm_schema_ready'] = true;
+    file_put_contents($schemaMarker, date('c'));
 }

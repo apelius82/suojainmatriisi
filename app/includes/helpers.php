@@ -26,6 +26,10 @@ function sm_log(string $message, array $context = []): void
 {
     global $smConfig;
     $logFile = $smConfig['log_file'] ?? (__DIR__ . '/../../storage/logs/suojainmatriisi.log');
+    $logDir = dirname($logFile);
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0775, true);
+    }
     $line = sprintf("[%s] %s %s\n", date('c'), $message, $context ? json_encode($context, JSON_UNESCAPED_UNICODE) : '');
     $result = file_put_contents($logFile, $line, FILE_APPEND);
     if ($result === false) {

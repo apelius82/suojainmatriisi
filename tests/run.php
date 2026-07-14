@@ -13,7 +13,7 @@ foreach ([
     'test_inheritance_resolution',
     'test_workflow_transitions',
     'test_csrf_and_auth',
-    'test_languages_available',
+    'test_supported_languages_and_terms',
 ] as $fn) {
     $fn();
     $ran++;

@@ -4,6 +4,7 @@ INSERT IGNORE INTO ppe_roles (id, slug, name) VALUES
 (3, 'reviewer', 'Tarkastaja'),
 (4, 'worker', 'Työntekijä');
 
+-- Seed users use plaintext password: Admin123!
 INSERT IGNORE INTO ppe_users (id, email, display_name, password_hash, role_id, is_active, created_at) VALUES
 (1, 'admin@suojainmatriisi.local', 'Admin User', '$2y$10$KjiZm4F8XHlkB1N8MjKe..nihtTJ8CWcDWzLyzrK9Vq.MJ/GzZeyK', 1, 1, NOW()),
 (2, 'reviewer@suojainmatriisi.local', 'Reviewer User', '$2y$10$KjiZm4F8XHlkB1N8MjKe..nihtTJ8CWcDWzLyzrK9Vq.MJ/GzZeyK', 3, 1, NOW());

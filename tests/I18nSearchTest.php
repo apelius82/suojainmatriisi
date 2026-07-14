@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-function test_languages_available(): void
+function test_supported_languages_and_terms(): void
 {
     $cfg = require __DIR__ . '/../app/config/terms/_index.php';
     assert($cfg['languages'] === ['fi', 'sv', 'en', 'it', 'el']);

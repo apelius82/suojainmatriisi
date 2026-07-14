@@ -3,10 +3,22 @@
   <form class="sm-form-grid" method="get" action="<?= sm_h(sm_base_url()) ?>/index.php">
     <input type="hidden" name="page" value="search">
     <label>Työmaa
-      <select name="site_id"><?php foreach ($sites as $site): ?><option value="<?= (int)$site['id'] ?>" <?= (int)($_GET['site_id'] ?? 0)===(int)$site['id']?'selected':'' ?>><?= sm_h($site['name']) ?></option><?php endforeach; ?></select>
+      <select name="site_id">
+        <?php foreach ($sites as $site): ?>
+          <option value="<?= (int)$site['id'] ?>" <?= (int)($_GET['site_id'] ?? 0) === (int)$site['id'] ? 'selected' : '' ?>>
+            <?= sm_h($site['name']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
     </label>
     <label>Työtehtävä
-      <select name="task_id"><?php foreach ($tasks as $task): ?><option value="<?= (int)$task['id'] ?>" <?= (int)($_GET['task_id'] ?? 0)===(int)$task['id']?'selected':'' ?>><?= sm_h($task['name']) ?></option><?php endforeach; ?></select>
+      <select name="task_id">
+        <?php foreach ($tasks as $task): ?>
+          <option value="<?= (int)$task['id'] ?>" <?= (int)($_GET['task_id'] ?? 0) === (int)$task['id'] ? 'selected' : '' ?>>
+            <?= sm_h($task['name']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
     </label>
     <label>Työntekijä
       <input id="worker-search" name="q" value="<?= sm_h((string)($_GET['q'] ?? '')) ?>" autocomplete="off" list="worker-options">
