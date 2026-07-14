@@ -1,0 +1,11 @@
+.sm-nav { position: sticky; top: 0; z-index: 1000; background: #0f172a; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.sm-nav-inner { max-width: 1320px; margin: 0 auto; padding: .6rem 1rem; display: flex; align-items: center; gap: .9rem; }
+.sm-brand { font-weight: 700; color: #fff; }
+.sm-top-links { display: flex; gap: .8rem; margin-left: auto; }
+.sm-top-links a { padding: .25rem .5rem; border-radius: 7px; }
+.sm-top-links a:hover { background: rgba(255,255,255,.12); }
+.sm-lang-form select { background: #1e293b; color: #fff; border-color: #334155; }
+.sm-logout { background: #fee000; color: #0f172a; padding: .4rem .65rem; border-radius: 8px; font-weight: 700; }
+.sm-footer-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background: #0f172a; padding: .7rem; }
+.sm-footer-nav a { color: #fff; font-weight: 600; }
+@media (min-width: 900px) { .sm-footer-nav { display: none; } }

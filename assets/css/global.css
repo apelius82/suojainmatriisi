@@ -1,0 +1,39 @@
+@font-face { font-family: 'Open Sans'; src: url('../fonts/OpenSans-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Open Sans'; src: url('../fonts/OpenSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+:root {
+  --sm-bg: #f3f6fa;
+  --sm-text: #0f172a;
+  --sm-dark: #0f172a;
+  --sm-accent: #fee000;
+  --sm-card: #ffffff;
+  --sm-border: #d9e2ec;
+  --sm-success: #117a37;
+  --sm-warn: #9c3f00;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Open Sans', Arial, sans-serif; color: var(--sm-text); background: var(--sm-bg); }
+a { color: inherit; text-decoration: none; }
+.sm-page-container { max-width: 1320px; margin: 0 auto; padding: 1rem; }
+.sm-card { background: var(--sm-card); border: 1px solid var(--sm-border); border-radius: 14px; padding: 1rem; margin-bottom: 1rem; }
+.sm-grid-2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.sm-grid-cards { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.sm-form-grid { display: grid; gap: .6rem; }
+label { display: grid; gap: .2rem; font-size: .95rem; }
+input, select, button { font: inherit; padding: .55rem .65rem; border-radius: 10px; border: 1px solid var(--sm-border); }
+.sm-btn-primary { background: var(--sm-accent); border-color: #eecf00; font-weight: 700; }
+.sm-btn-secondary { background: #fff9cc; border-color: #f4d700; }
+.sm-inline-form { display: flex; gap: .4rem; }
+.sm-error { color: #a01818; font-weight: 600; }
+.sm-table { width: 100%; border-collapse: collapse; }
+.sm-table th, .sm-table td { border-bottom: 1px solid #e6edf5; text-align: left; padding: .45rem; vertical-align: top; }
+.sm-ppe-card { background: #fff; border: 1px solid #dbe7f3; border-radius: 12px; padding: .8rem; text-align: center; }
+.sm-level-required { color: #b20000; font-weight: 700; }
+.sm-level-recommended { color: var(--sm-success); font-weight: 700; }
+.sm-level-forbidden { color: var(--sm-warn); font-weight: 700; }
+.sm-warning { border-color: #ffce8f; background: #fff6ea; }
+.sm-print-actions { margin: 1rem 0 4.5rem; }
+@media print {
+  .sm-nav, .sm-footer-nav, .sm-print-actions, form { display: none !important; }
+  body { background: #fff; }
+  .sm-card { border: 0; }
+}
