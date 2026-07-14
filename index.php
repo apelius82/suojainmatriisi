@@ -74,10 +74,15 @@ if ($page === 'search') {
     $environments = $searchData['environments'];
     $sites        = $library->allSites($envId > 0 ? $envId : null);
     $zones        = $siteId > 0 ? $controller->zonesBySite($siteId) : [];
-    $tasks        = $library->allTasks($envId > 0 ? $envId : null);
+    $taskCards    = $controller->searchTaskCards(
+        $envId > 0 ? $envId : null,
+        $siteId > 0 ? $siteId : null,
+        $zoneId > 0 ? $zoneId : null
+    );
+    $tasks        = array_map(static fn(array $card): array => $card['task'], $taskCards);
 
     $result = null;
-    if ($siteId > 0 || $envId > 0) {
+    if (($siteId > 0 || $envId > 0) && $taskId > 0) {
         $result = $controller->searchResult(
             $envId  > 0 ? $envId  : null,
             $siteId > 0 ? $siteId : null,

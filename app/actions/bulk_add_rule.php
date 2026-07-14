@@ -25,6 +25,10 @@ if ($ppeId < 1) {
 
 // Jos ei valittuja tehtäviä, hae kaikki työmaan / ympäristön tehtävät
 if (empty($taskIds)) {
+    if ($siteId > 0 && $envId < 1) {
+        $site = $library->findSite($siteId);
+        $envId = (int)($site['environment_id'] ?? 0);
+    }
     $allTasks = $library->allTasks($envId > 0 ? $envId : null);
     $taskIds = array_column($allTasks, 'id');
 }

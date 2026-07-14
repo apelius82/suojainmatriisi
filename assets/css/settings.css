@@ -225,3 +225,100 @@
 
 /* ===== SECTION HEADER BADGES ===== */
 .sm-section-badge-risks { background: #fff7ed; color: #c2410c; }
+
+/* ===== TASK CARDS (SEARCH) ===== */
+.sm-task-card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.sm-task-card {
+  background: var(--sm-card);
+  border: 1px solid var(--sm-border);
+  border-radius: var(--sm-radius);
+  padding: 1rem;
+  box-shadow: var(--sm-shadow);
+  display: grid;
+  gap: .75rem;
+}
+.sm-task-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.sm-task-card h3 { margin: 0; font-size: 1rem; color: var(--sm-dark); }
+.sm-task-card-desc { margin: 0; font-size: .88rem; color: var(--sm-text); min-height: 2.2rem; }
+.sm-task-card .sm-context-chip {
+  background: var(--sm-surface-2);
+  color: var(--sm-muted);
+  border: 1px solid var(--sm-border);
+}
+.sm-task-card-meta { display: flex; gap: .35rem; flex-wrap: wrap; }
+.sm-task-card-summary {
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+  font-size: .78rem;
+  color: var(--sm-muted);
+}
+
+/* ===== ADMIN CARD LAYOUT ===== */
+.sm-admin-card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.sm-admin-entity-card {
+  background: var(--sm-card);
+  border: 1px solid var(--sm-border);
+  border-radius: var(--sm-radius);
+  padding: 1rem;
+  box-shadow: var(--sm-shadow);
+  display: grid;
+  gap: .75rem;
+}
+.sm-admin-entity-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.sm-admin-entity-head h3 { margin: 0; font-size: 1rem; color: var(--sm-dark); }
+.sm-admin-entity-desc { margin: 0; font-size: .85rem; color: var(--sm-muted); }
+.sm-admin-entity-meta { display: flex; gap: .35rem; flex-wrap: wrap; }
+
+/* ===== MODALS ===== */
+.sm-modal {
+  border: 0;
+  border-radius: 16px;
+  width: min(960px, calc(100vw - 2rem));
+  max-height: 88vh;
+  overflow: auto;
+  padding: 1rem 1.2rem 1.2rem;
+  box-shadow: var(--sm-shadow-lg);
+}
+.sm-modal::backdrop { background: rgba(15, 23, 42, .55); backdrop-filter: blur(2px); }
+.sm-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+.sm-modal-header h3 { margin: 0; font-size: 1.05rem; color: var(--sm-dark); }
+.sm-modal-path {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+  color: var(--sm-muted);
+  font-size: .82rem;
+}
+.sm-modal-path span {
+  background: var(--sm-surface-2);
+  border: 1px solid var(--sm-border);
+  border-radius: 999px;
+  padding: .2rem .55rem;
+}
+.sm-modal-description { margin: 0 0 1rem; color: var(--sm-text); font-size: .9rem; }

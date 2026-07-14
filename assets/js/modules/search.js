@@ -25,6 +25,7 @@ if (input && list) {
 
 /* Zone cascade: populate zone dropdown when site changes */
 (function () {
+  const searchForm = document.getElementById('sm-search-form');
   const siteSelect = document.getElementById('sm-site-select');
   const zoneStep   = document.getElementById('sm-zone-step');
   const zoneSelect = document.getElementById('sm-zone-select');
@@ -66,6 +67,11 @@ if (input && list) {
   siteSelect.addEventListener('change', () => {
     zoneSelect.value = '0';
     loadZones(siteSelect.value);
+    searchForm?.submit();
+  });
+
+  zoneSelect.addEventListener('change', () => {
+    searchForm?.submit();
   });
 
   /* Re-submit form on env change so server can filter site list */
@@ -86,3 +92,47 @@ if (input && list) {
   }
 })();
 
+/* Task detail modals */
+(function () {
+  const openButtons = document.querySelectorAll('[data-open-task-modal]');
+  if (!openButtons.length) return;
+
+  openButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-open-task-modal');
+      const modal = document.getElementById(`sm-task-modal-${id}`);
+      if (modal?.showModal) {
+        modal.showModal();
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-close-task-modal]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const modal = btn.closest('dialog');
+      modal?.close();
+    });
+  });
+
+  document.querySelectorAll('dialog.sm-modal').forEach((modal) => {
+    modal.addEventListener('click', (event) => {
+      const rect = modal.getBoundingClientRect();
+      const inside = (
+        event.clientX >= rect.left
+        && event.clientX <= rect.right
+        && event.clientY >= rect.top
+        && event.clientY <= rect.bottom
+      );
+      if (!inside) modal.close();
+    });
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const selectedTaskId = params.get('task_id');
+  if (selectedTaskId) {
+    const modal = document.getElementById(`sm-task-modal-${selectedTaskId}`);
+    if (modal?.showModal) {
+      modal.showModal();
+    }
+  }
+})();

@@ -309,42 +309,64 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
   <div class="sm-section-header">
     <h2 class="sm-section-title" id="tab-tasks-heading"><?= sm_h(sm_t('tab_tasks', $lang)) ?></h2>
   </div>
-  <div class="sm-card" style="padding:0">
+  <div class="sm-card">
     <?php if (empty($data['tasks'])): ?>
-      <div class="sm-empty" style="margin:1.5rem"><p>Ei tehtävärekisteröintejä.</p></div>
+      <div class="sm-empty"><p>Ei tehtävärekisteröintejä.</p></div>
     <?php else: ?>
-      <div class="sm-list-block" style="border:0;border-radius:0">
+      <div class="sm-admin-card-grid">
         <?php foreach ($data['tasks'] as $task):
-          $isEditing = ($editId === (int)$task['id'] && $activeTab === 'tasks');
           $wt = (string)($task['work_type'] ?? 'task');
+          $taskId = (int)$task['id'];
+          $taskMeta = $data['taskMeta'][$taskId] ?? ['ppe_count' => 0, 'sites' => [], 'zones' => []];
         ?>
-          <div class="sm-list-row">
-            <div class="sm-list-row-main">
-              <div class="sm-list-row-name"><?= sm_h($task['name']) ?></div>
-              <div class="sm-list-row-meta">
-                <span class="sm-badge sm-badge-global" style="font-size:.72rem"><?= sm_h($wt) ?></span>
-                <span style="color:var(--sm-muted);font-size:.8rem"> <?= sm_h($task['category']) ?></span>
+          <article class="sm-admin-entity-card">
+            <div class="sm-admin-entity-head">
+              <div>
+                <h3><?= sm_h((string)$task['name']) ?></h3>
+                <div class="sm-list-row-meta">
+                  <span class="sm-badge sm-badge-global" style="font-size:.72rem"><?= sm_h($wt) ?></span>
+                  <span style="color:var(--sm-muted);font-size:.8rem"> <?= sm_h((string)$task['category']) ?></span>
+                </div>
               </div>
+              <span class="sm-badge sm-badge-published"><?= (int)$taskMeta['ppe_count'] ?> suojainta</span>
             </div>
+            <?php if (!empty($task['description'])): ?>
+              <p class="sm-admin-entity-desc"><?= sm_h((string)$task['description']) ?></p>
+            <?php endif; ?>
+            <?php if (!empty($taskMeta['sites']) || !empty($taskMeta['zones'])): ?>
+              <div class="sm-admin-entity-meta">
+                <?php foreach (($taskMeta['sites'] ?? []) as $siteName): ?>
+                  <span class="sm-badge sm-badge-site"><?= sm_h((string)$siteName) ?></span>
+                <?php endforeach; ?>
+                <?php foreach (($taskMeta['zones'] ?? []) as $zoneName): ?>
+                  <span class="sm-badge sm-badge-zone"><?= sm_h((string)$zoneName) ?></span>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
             <div class="sm-list-row-actions">
-              <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=tasks&edit_id=<?= (int)$task['id'] ?>"
-                 class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
+              <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-open-admin-modal="task-<?= $taskId ?>">
+                <?= $iconEdit ?> Muokkaa
+              </button>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
                     data-confirm="<?= sm_h('Arkistoi tehtävä ' . $task['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="task">
-                <input type="hidden" name="entity_id" value="<?= (int)$task['id'] ?>">
+                <input type="hidden" name="entity_id" value="<?= $taskId ?>">
                 <button class="sm-btn sm-btn-ghost sm-btn-sm sm-btn-danger-ghost" title="Arkistoi"><?= $iconArchive ?></button>
               </form>
             </div>
-          </div>
-          <?php if ($isEditing): ?>
-          <div class="sm-inline-edit-form">
+          </article>
+
+          <dialog class="sm-modal sm-modal-admin" id="sm-admin-modal-task-<?= $taskId ?>">
+            <div class="sm-modal-header">
+              <h3>Muokkaa tehtävää: <?= sm_h((string)$task['name']) ?></h3>
+              <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>&times;</button>
+            </div>
             <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=edit_entity" class="sm-form-row">
               <?= sm_csrf_field() ?>
               <input type="hidden" name="entity_type" value="task">
-              <input type="hidden" name="entity_id" value="<?= (int)$task['id'] ?>">
-              <label>Nimi <input name="name" required value="<?= sm_h($task['name']) ?>"></label>
+              <input type="hidden" name="entity_id" value="<?= $taskId ?>">
+              <label>Nimi <input name="name" required value="<?= sm_h((string)$task['name']) ?>"></label>
               <label>Tyyppi
                 <select name="work_type">
                   <option value="task" <?= $wt === 'task' ? 'selected' : '' ?>>Tehtävä</option>
@@ -352,14 +374,13 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                   <option value="position" <?= $wt === 'position' ? 'selected' : '' ?>>Vakanssi</option>
                 </select>
               </label>
-              <label>Kategoria <input name="category" required value="<?= sm_h($task['category']) ?>"></label>
+              <label>Kategoria <input name="category" required value="<?= sm_h((string)$task['category']) ?>"></label>
               <div style="display:flex;gap:.5rem;align-items:center">
                 <button class="sm-btn sm-btn-primary sm-btn-sm" type="submit">Tallenna</button>
-                <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=tasks" class="sm-btn sm-btn-ghost sm-btn-sm">Peruuta</a>
+                <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>Peruuta</button>
               </div>
             </form>
-          </div>
-          <?php endif; ?>
+          </dialog>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
@@ -388,56 +409,84 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
   <div class="sm-section-header">
     <h2 class="sm-section-title" id="tab-ppe-heading"><?= sm_h(sm_t('tab_ppe', $lang)) ?></h2>
   </div>
-  <div class="sm-card" style="padding:0">
+  <div class="sm-card">
     <?php if (empty($data['ppeItems'])): ?>
-      <div class="sm-empty" style="margin:1.5rem"><p>Suojainkirjasto on tyhjä.</p></div>
+      <div class="sm-empty"><p>Suojainkirjasto on tyhjä.</p></div>
     <?php else: ?>
-      <div class="sm-list-block" style="border:0;border-radius:0">
+      <div class="sm-admin-card-grid">
         <?php foreach ($data['ppeItems'] as $item):
           $cls = (string)($item['item_class'] ?? 'personal_protection');
-          $isEditing = ($editId === (int)$item['id'] && $activeTab === 'ppe');
+          $itemId = (int)$item['id'];
+          $linkedTasks = $data['ppeTaskLinks'][$itemId] ?? [];
           $imgUrl = sm_ppe_img_url($item);
         ?>
-          <div class="sm-list-row">
-            <img src="<?= sm_h($imgUrl) ?>" alt="" width="36" height="36" class="sm-list-row-img" style="object-fit:contain;border-radius:6px;background:var(--sm-surface-2)">
-            <div class="sm-list-row-main">
-              <div class="sm-list-row-name"><?= sm_h($item['name']) ?> <code class="sm-code-pill"><?= sm_h($item['code']) ?></code></div>
-              <div class="sm-list-row-meta">
-                <span class="sm-badge <?= $cls === 'other_safety' ? 'sm-badge-global' : 'sm-badge-mandatory' ?>" style="font-size:.72rem"><?= sm_h(sm_t($cls, $lang)) ?></span>
-                <?php if (!empty($item['standard_ref'])): ?><span style="color:var(--sm-muted);font-size:.78rem;font-family:monospace"> <?= sm_h((string)$item['standard_ref']) ?></span><?php endif; ?>
+          <article class="sm-admin-entity-card">
+            <div class="sm-admin-entity-head">
+              <div style="display:flex;gap:.75rem;align-items:center;">
+                <img src="<?= sm_h($imgUrl) ?>" alt="" width="36" height="36" class="sm-list-row-img" style="object-fit:contain;border-radius:6px;background:var(--sm-surface-2)">
+                <div>
+                  <h3><?= sm_h((string)$item['name']) ?> <code class="sm-code-pill"><?= sm_h((string)$item['code']) ?></code></h3>
+                  <div class="sm-list-row-meta">
+                    <span class="sm-badge <?= $cls === 'other_safety' ? 'sm-badge-global' : 'sm-badge-mandatory' ?>" style="font-size:.72rem"><?= sm_h(sm_t($cls, $lang)) ?></span>
+                    <?php if (!empty($item['standard_ref'])): ?><span style="color:var(--sm-muted);font-size:.78rem;font-family:monospace"> <?= sm_h((string)$item['standard_ref']) ?></span><?php endif; ?>
+                  </div>
+                </div>
               </div>
+              <span class="sm-badge sm-badge-published"><?= count($linkedTasks) ?> tehtävää</span>
             </div>
+            <?php if (!empty($linkedTasks)): ?>
+              <div class="sm-admin-entity-meta">
+                <?php foreach (array_slice($linkedTasks, 0, 4) as $taskName): ?>
+                  <span class="sm-badge sm-badge-task"><?= sm_h((string)$taskName) ?></span>
+                <?php endforeach; ?>
+                <?php if (count($linkedTasks) > 4): ?>
+                  <span class="sm-badge sm-badge-archived">+<?= count($linkedTasks) - 4 ?></span>
+                <?php endif; ?>
+              </div>
+            <?php endif; ?>
             <div class="sm-list-row-actions">
-              <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=ppe&edit_id=<?= (int)$item['id'] ?>"
-                 class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
+              <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-open-admin-modal="ppe-<?= $itemId ?>">
+                <?= $iconEdit ?> Muokkaa
+              </button>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
                     data-confirm="<?= sm_h('Arkistoi suojain ' . $item['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="ppe">
-                <input type="hidden" name="entity_id" value="<?= (int)$item['id'] ?>">
+                <input type="hidden" name="entity_id" value="<?= $itemId ?>">
                 <button class="sm-btn sm-btn-ghost sm-btn-sm sm-btn-danger-ghost" title="Arkistoi"><?= $iconArchive ?></button>
               </form>
             </div>
-          </div>
-          <?php if ($isEditing): ?>
-          <div class="sm-inline-edit-form">
+          </article>
+
+          <dialog class="sm-modal sm-modal-admin" id="sm-admin-modal-ppe-<?= $itemId ?>">
+            <div class="sm-modal-header">
+              <h3>Muokkaa suojainta: <?= sm_h((string)$item['name']) ?></h3>
+              <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>&times;</button>
+            </div>
+            <?php if (!empty($linkedTasks)): ?>
+              <div class="sm-admin-entity-meta" style="margin-bottom:1rem">
+                <?php foreach ($linkedTasks as $taskName): ?>
+                  <span class="sm-badge sm-badge-task"><?= sm_h((string)$taskName) ?></span>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
             <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=edit_entity" class="sm-rule-form-grid">
               <?= sm_csrf_field() ?>
               <input type="hidden" name="entity_type" value="ppe">
-              <input type="hidden" name="entity_id" value="<?= (int)$item['id'] ?>">
-              <label>Nimi <input name="name" required value="<?= sm_h($item['name']) ?>"></label>
+              <input type="hidden" name="entity_id" value="<?= $itemId ?>">
+              <label>Nimi <input name="name" required value="<?= sm_h((string)$item['name']) ?>"></label>
               <label>Luokka
                 <select name="item_class">
                   <option value="personal_protection" <?= $cls === 'personal_protection' ? 'selected' : '' ?>><?= sm_h(sm_t('personal_protection', $lang)) ?></option>
                   <option value="other_safety" <?= $cls === 'other_safety' ? 'selected' : '' ?>><?= sm_h(sm_t('other_safety', $lang)) ?></option>
                 </select>
               </label>
-              <label>Kategoria <input name="category" required value="<?= sm_h($item['category']) ?>"></label>
+              <label>Kategoria <input name="category" required value="<?= sm_h((string)$item['category']) ?>"></label>
               <label>Standardi <input name="standard_ref" value="<?= sm_h((string)($item['standard_ref'] ?? '')) ?>"></label>
-              <label>Ikoni <input name="icon" required value="<?= sm_h($item['icon']) ?>"></label>
+              <label>Ikoni <input name="icon" required value="<?= sm_h((string)$item['icon']) ?>"></label>
               <div style="display:flex;gap:.5rem;align-items:center">
                 <button class="sm-btn sm-btn-primary sm-btn-sm" type="submit">Tallenna</button>
-                <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=ppe" class="sm-btn sm-btn-ghost sm-btn-sm">Peruuta</a>
+                <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>Peruuta</button>
               </div>
             </form>
             <div class="sm-ppe-img-upload">
@@ -445,14 +494,48 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=upload_ppe_image"
                     enctype="multipart/form-data" class="sm-inline-form" style="margin-top:.5rem">
                 <?= sm_csrf_field() ?>
-                <input type="hidden" name="ppe_item_id" value="<?= (int)$item['id'] ?>">
+                <input type="hidden" name="ppe_item_id" value="<?= $itemId ?>">
                 <input type="file" name="ppe_image" accept="image/svg+xml,image/png,image/jpeg,image/webp" class="sm-file-input">
                 <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Lataa kuva</button>
               </form>
               <p class="sm-hint">Sallittu: SVG, PNG, JPG, WEBP – max 2 MB</p>
             </div>
-          </div>
-          <?php endif; ?>
+            <div class="sm-ppe-img-upload">
+              <strong>Missä tehtävissä suojainta käytetään?</strong>
+              <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=bulk_add_rule" class="sm-rule-form-grid" style="margin-top:.5rem">
+                <?= sm_csrf_field() ?>
+                <input type="hidden" name="ppe_item_id" value="<?= $itemId ?>">
+                <label>Vaatimustaso
+                  <select name="requirement_level">
+                    <option value="mandatory">Pakollinen</option>
+                    <option value="conditional">Tilanteen mukaan</option>
+                    <option value="recommended">Suositeltava</option>
+                  </select>
+                </label>
+                <label>Toimintaympäristö
+                  <select name="environment_id">
+                    <option value="0">— kaikki —</option>
+                    <?php foreach ($data['environments'] as $env): ?>
+                      <option value="<?= (int)$env['id'] ?>"><?= sm_h((string)$env['name']) ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </label>
+                <label>Työmaa / toimipaikka
+                  <select name="site_id">
+                    <option value="0">— kaikki työmaat —</option>
+                    <?php foreach ($data['sites'] as $site): ?>
+                      <option value="<?= (int)$site['id'] ?>"><?= sm_h((string)$site['name']) ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </label>
+                <label class="sm-form-full">Huomio <input name="notes" autocomplete="off" placeholder="Esim. koskee kaikkia Siilinjärven tehtäviä"></label>
+                <div class="sm-form-full">
+                  <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Liitä valittuihin tehtäviin</button>
+                </div>
+              </form>
+              <p class="sm-hint">Jos et valitse yksittäisiä tehtäviä, suojain lisätään automaattisesti valitun ympäristön/työmaan tehtäville.</p>
+            </div>
+          </dialog>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
@@ -784,3 +867,5 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
   </div>
 </section>
 <?php endif; ?>
+
+<script type="module" src="<?= sm_h(sm_base_url()) ?>/assets/js/modules/dashboard.js"></script>
