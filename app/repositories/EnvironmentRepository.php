@@ -24,4 +24,16 @@ final class EnvironmentRepository extends BaseRepository
         );
         $stmt->execute([$code, $name, $description]);
     }
+
+    public function update(int $id, string $code, string $name, string $description = ''): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE ppe_environments SET code = ?, name = ?, description = ? WHERE id = ?');
+        $stmt->execute([$code, $name, $description, $id]);
+    }
+
+    public function archive(int $id): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE ppe_environments SET is_active = 0 WHERE id = ?');
+        $stmt->execute([$id]);
+    }
 }

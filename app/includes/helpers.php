@@ -56,7 +56,7 @@ function sm_h(string $value): string
 }
 
 /**
- * Renderöi PPE-kortti tulossivulle.
+ * Renderöi PPE-kortti tulossivulle (paranneltu versio kuvalla).
  */
 function sm_render_ppe_card(array $card, string $lang = 'fi'): string
 {
@@ -71,10 +71,18 @@ function sm_render_ppe_card(array $card, string $lang = 'fi'): string
     $name       = sm_h((string)$ppe['name']);
     $levelLabel = sm_h(sm_t($level, $lang));
     $levelClass = sm_h($level);
+    $imagePath  = (string)($ppe['image_path'] ?? '');
+
+    // Kuva: jos ladattu kuva olemassa käytetään sitä, muuten SVG-ikoni
+    if ($imagePath !== '') {
+        $imgSrc = sm_h(sm_base_url()) . '/app/api/ppe_image.php?f=' . sm_h($imagePath);
+    } else {
+        $imgSrc = sm_h(sm_base_url()) . '/assets/img/ppe/' . $icon;
+    }
 
     $out  = '<article class="sm-ppe-card sm-ppe-card-' . $levelClass . '">';
     $out .= '<div class="sm-ppe-card-header">';
-    $out .= '<img src="' . sm_h(sm_base_url()) . '/assets/img/ppe/' . $icon . '" alt="" width="44" height="44" loading="lazy">';
+    $out .= '<img src="' . $imgSrc . '" alt="' . $name . '" width="44" height="44" loading="lazy" class="sm-ppe-img">';
     $out .= '<div class="sm-ppe-card-title">';
     $out .= '<h3>' . $name . '</h3>';
     if ($stdRef !== '') {
@@ -85,17 +93,14 @@ function sm_render_ppe_card(array $card, string $lang = 'fi'): string
     $out .= '<div class="sm-ppe-card-footer">';
     $out .= '<span class="sm-badge sm-badge-' . $levelClass . '">' . $levelLabel . '</span>';
     if ($scope !== '') {
-        $scopeLabel = '';
-        if (function_exists('sm_scope_label')) {
-            $scopeLabel = sm_scope_label($scope, $lang);
-        }
+        $scopeLabel = sm_scope_label($scope, $lang);
         if ($scopeLabel !== '') {
             $out .= '<span class="sm-ppe-scope">' . sm_h($scopeLabel) . '</span>';
         }
     }
     $out .= '</div>';
     if ($condition !== '') {
-        $out .= '<p class="sm-ppe-condition"><strong>' . sm_h(sm_t('condition', $lang)) . ':</strong> ' . sm_h($condition) . '</p>';
+        $out .= '<p class="sm-ppe-condition"><span aria-hidden="true">⚠</span> ' . sm_h($condition) . '</p>';
     } elseif ($notes !== '') {
         $out .= '<p class="sm-ppe-condition">' . sm_h($notes) . '</p>';
     }
@@ -108,4 +113,14 @@ function sm_scope_label(string $scope, string $lang = 'fi'): string
     $key = 'scope_' . $scope;
     $val = sm_t($key, $lang);
     return $val !== $key ? $val : $scope;
+}
+
+/** Palauttaa PPE-kuvan URL-osoitteen (kuva tai SVG-ikoni) */
+function sm_ppe_img_url(array $ppe): string
+{
+    $imagePath = (string)($ppe['image_path'] ?? '');
+    if ($imagePath !== '') {
+        return sm_base_url() . '/app/api/ppe_image.php?f=' . urlencode($imagePath);
+    }
+    return sm_base_url() . '/assets/img/ppe/' . ($ppe['icon'] ?? 'shield.svg');
 }
