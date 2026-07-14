@@ -1,4 +1,8 @@
+import { bindOutsideClose } from './modal.js';
+
 (function () {
+  'use strict';
+
   const openButtons = document.querySelectorAll('[data-open-admin-modal]');
   if (!openButtons.length) return;
 
@@ -20,15 +24,6 @@
   });
 
   document.querySelectorAll('dialog.sm-modal-admin').forEach((modal) => {
-    modal.addEventListener('click', (event) => {
-      const rect = modal.getBoundingClientRect();
-      const inside = (
-        event.clientX >= rect.left
-        && event.clientX <= rect.right
-        && event.clientY >= rect.top
-        && event.clientY <= rect.bottom
-      );
-      if (!inside) modal.close();
-    });
+    bindOutsideClose(modal);
   });
 })();

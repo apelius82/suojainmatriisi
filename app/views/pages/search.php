@@ -69,17 +69,17 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
 
 <section class="sm-result-section" aria-labelledby="task-list-heading">
   <div class="sm-section-header">
-    <h2 class="sm-section-title" id="task-list-heading">Tehtävät</h2>
+    <h2 class="sm-section-title" id="task-list-heading"><?= sm_h(sm_t('task_cards', $lang)) ?></h2>
     <span class="sm-badge sm-badge-published"><?= count($taskCards) ?></span>
   </div>
 
   <?php if (!$filtersReady): ?>
     <div class="sm-empty">
-      <p>Valitse toimintaympäristö ja työmaa. Tehtäväkortit latautuvat automaattisesti alle.</p>
+      <p><?= sm_h(sm_t('search_select_filters_hint', $lang)) ?></p>
     </div>
   <?php elseif (empty($taskCards)): ?>
     <div class="sm-empty">
-      <p>Ei tehtäviä näillä rajauksilla.</p>
+      <p><?= sm_h(sm_t('search_no_tasks', $lang)) ?></p>
     </div>
   <?php else: ?>
     <div class="sm-task-card-grid">
@@ -97,7 +97,7 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         <?php if (!empty($task['description'])): ?>
           <p class="sm-task-card-desc"><?= sm_h((string)$task['description']) ?></p>
         <?php else: ?>
-          <p class="sm-task-card-desc sm-text-muted">Ei kuvausta.</p>
+          <p class="sm-task-card-desc sm-text-muted"><?= sm_h(sm_t('no_description', $lang)) ?></p>
         <?php endif; ?>
 
         <div class="sm-task-card-meta">
@@ -107,13 +107,13 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         </div>
 
         <div class="sm-task-card-summary">
-          <span><strong><?= (int)$summary['always'] ?></strong> pakollista</span>
-          <span><strong><?= (int)$summary['conditional'] ?></strong> tilanteen mukaan</span>
-          <span><strong><?= (int)$summary['other'] ?></strong> muuta</span>
+          <span><?= sm_h(sm_tr('count_mandatory', ['count' => (int)$summary['always']], $lang)) ?></span>
+          <span><?= sm_h(sm_tr('count_conditional', ['count' => (int)$summary['conditional']], $lang)) ?></span>
+          <span><?= sm_h(sm_tr('count_other', ['count' => (int)$summary['other']], $lang)) ?></span>
         </div>
 
         <button class="sm-btn sm-btn-primary sm-btn-sm" type="button" data-open-task-modal="<?= $taskId ?>">
-          Avaa tehtävä
+          <?= sm_h(sm_t('open_task', $lang)) ?>
         </button>
       </article>
       <?php endforeach; ?>
@@ -149,7 +149,9 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         <h4 class="sm-section-title"><?= sm_h(sm_t('section_always', $lang)) ?></h4>
       </div>
       <div class="sm-grid-cards">
-        <?php foreach ($sections['always'] as $ppeCard): ?><?= sm_render_ppe_card($ppeCard, $lang) ?><?php endforeach; ?>
+        <?php foreach ($sections['always'] as $ppeCard): ?>
+          <?= sm_render_ppe_card($ppeCard, $lang) ?>
+        <?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>
@@ -160,7 +162,9 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         <h4 class="sm-section-title"><?= sm_h(sm_t('section_conditional', $lang)) ?></h4>
       </div>
       <div class="sm-grid-cards">
-        <?php foreach ($sections['conditional'] as $ppeCard): ?><?= sm_render_ppe_card($ppeCard, $lang) ?><?php endforeach; ?>
+        <?php foreach ($sections['conditional'] as $ppeCard): ?>
+          <?= sm_render_ppe_card($ppeCard, $lang) ?>
+        <?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>
@@ -171,7 +175,9 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
         <h4 class="sm-section-title"><?= sm_h(sm_t('section_other', $lang)) ?></h4>
       </div>
       <div class="sm-grid-cards">
-        <?php foreach ($sections['other_safety'] as $ppeCard): ?><?= sm_render_ppe_card($ppeCard, $lang) ?><?php endforeach; ?>
+        <?php foreach ($sections['other_safety'] as $ppeCard): ?>
+          <?= sm_render_ppe_card($ppeCard, $lang) ?>
+        <?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>
@@ -179,11 +185,11 @@ $filtersReady = ($selEnv > 0 || $selSite > 0);
   <?php if (!empty($card['notes']) || !empty($card['risks'])): ?>
     <section class="sm-result-section">
       <div class="sm-section-header">
-        <h4 class="sm-section-title">Huomiot ja riskit</h4>
+        <h4 class="sm-section-title"><?= sm_h(sm_t('notes_and_risks', $lang)) ?></h4>
       </div>
       <div class="sm-info-list">
         <?php foreach ($card['notes'] as $note): ?><div class="sm-info-row"><p><?= sm_h((string)$note) ?></p></div><?php endforeach; ?>
-        <?php foreach ($card['risks'] as $risk): ?><div class="sm-info-row"><strong>Riski</strong><p><?= sm_h((string)$risk) ?></p></div><?php endforeach; ?>
+        <?php foreach ($card['risks'] as $risk): ?><div class="sm-info-row"><strong><?= sm_h(sm_t('risk', $lang)) ?></strong><p><?= sm_h((string)$risk) ?></p></div><?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>

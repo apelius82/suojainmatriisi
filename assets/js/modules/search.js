@@ -1,3 +1,5 @@
+import { bindOutsideClose } from './modal.js';
+
 /* Worker autocomplete */
 const input = document.getElementById('worker-search');
 const list  = document.getElementById('worker-options');
@@ -26,6 +28,17 @@ if (input && list) {
 /* Zone cascade: populate zone dropdown when site changes */
 (function () {
   const searchForm = document.getElementById('sm-search-form');
+  let submitTimer = null;
+  const submitSoon = () => {
+    if (!searchForm) return;
+    if (submitTimer) {
+      clearTimeout(submitTimer);
+    }
+    submitTimer = window.setTimeout(() => {
+      searchForm.submit();
+    }, 200);
+  };
+
   const siteSelect = document.getElementById('sm-site-select');
   const zoneStep   = document.getElementById('sm-zone-step');
   const zoneSelect = document.getElementById('sm-zone-select');
@@ -67,11 +80,11 @@ if (input && list) {
   siteSelect.addEventListener('change', () => {
     zoneSelect.value = '0';
     loadZones(siteSelect.value);
-    searchForm?.submit();
+    submitSoon();
   });
 
   zoneSelect.addEventListener('change', () => {
-    searchForm?.submit();
+    submitSoon();
   });
 
   /* Re-submit form on env change so server can filter site list */
@@ -115,16 +128,7 @@ if (input && list) {
   });
 
   document.querySelectorAll('dialog.sm-modal').forEach((modal) => {
-    modal.addEventListener('click', (event) => {
-      const rect = modal.getBoundingClientRect();
-      const inside = (
-        event.clientX >= rect.left
-        && event.clientX <= rect.right
-        && event.clientY >= rect.top
-        && event.clientY <= rect.bottom
-      );
-      if (!inside) modal.close();
-    });
+    bindOutsideClose(modal);
   });
 
   const params = new URLSearchParams(window.location.search);

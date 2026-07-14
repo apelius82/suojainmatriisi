@@ -77,6 +77,7 @@ final class PageController
         $ctxEnv = $envId ? $this->environments->find($envId) : null;
         $ctxSite = $siteId ? $this->findSite($siteId) : null;
         $ctxZone = $zoneId ? $this->zones->find($zoneId) : null;
+        $riskTerms = require __DIR__ . '/../config/risk_keywords.php';
         $allPpe = $this->library->allPpeItems();
         $ppeMap = [];
         foreach ($allPpe as $item) {
@@ -96,7 +97,9 @@ final class PageController
                 + count($sections['conditional'] ?? [])
                 + count($sections['other_safety'] ?? []);
 
-            if ($totalPpe === 0 && $siteId !== null) {
+            // Kun käyttäjä rajaa ympäristöllä/työmaalla, näytetään vain kortit joilla on
+            // kyseisessä kontekstissa ratkaistavia vaatimuksia.
+            if ($totalPpe === 0 && ($siteId !== null || $envId !== null)) {
                 continue;
             }
 
@@ -107,7 +110,15 @@ final class PageController
                 if ($text === '') {
                     continue;
                 }
-                if (str_contains(mb_strtolower($text), 'riski')) {
+                $lower = mb_strtolower($text);
+                $isRisk = false;
+                foreach ($riskTerms as $term) {
+                    if (str_contains($lower, $term)) {
+                        $isRisk = true;
+                        break;
+                    }
+                }
+                if ($isRisk) {
                     $risks[] = $text;
                 } else {
                     $notes[] = $text;

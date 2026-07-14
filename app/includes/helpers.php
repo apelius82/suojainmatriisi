@@ -123,6 +123,15 @@ function sm_scope_label(string $scope, string $lang = 'fi'): string
     return $val !== $key ? $val : $scope;
 }
 
+function sm_tr(string $key, array $replacements = [], string $lang = 'fi'): string
+{
+    $text = sm_t($key, $lang);
+    foreach ($replacements as $name => $value) {
+        $text = str_replace('{' . $name . '}', (string)$value, $text);
+    }
+    return $text;
+}
+
 /** Palauttaa PPE-kuvan URL-osoitteen (kuva tai SVG-ikoni) */
 function sm_ppe_img_url(array $ppe): string
 {

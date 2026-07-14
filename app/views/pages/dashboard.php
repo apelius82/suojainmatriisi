@@ -14,6 +14,7 @@ $errMsg = match ($_GET['error'] ?? '') {
     'too_large'    => sm_t('err_too_large', $lang),
     'invalid_type' => sm_t('err_invalid_type', $lang),
     'move_failed'  => sm_t('err_move_failed', $lang),
+    'missing_environment' => sm_t('err_missing_environment', $lang),
     default        => '',
 };
 
@@ -328,7 +329,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                   <span style="color:var(--sm-muted);font-size:.8rem"> <?= sm_h((string)$task['category']) ?></span>
                 </div>
               </div>
-              <span class="sm-badge sm-badge-published"><?= (int)$taskMeta['ppe_count'] ?> suojainta</span>
+              <span class="sm-badge sm-badge-published"><?= sm_h(sm_tr('count_equipment', ['count' => (int)$taskMeta['ppe_count']], $lang)) ?></span>
             </div>
             <?php if (!empty($task['description'])): ?>
               <p class="sm-admin-entity-desc"><?= sm_h((string)$task['description']) ?></p>
@@ -359,7 +360,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
 
           <dialog class="sm-modal sm-modal-admin" id="sm-admin-modal-task-<?= $taskId ?>">
             <div class="sm-modal-header">
-              <h3>Muokkaa tehtävää: <?= sm_h((string)$task['name']) ?></h3>
+              <h3><?= sm_h(sm_tr('edit_task_title', ['name' => (string)$task['name']], $lang)) ?></h3>
               <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>&times;</button>
             </div>
             <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=edit_entity" class="sm-form-row">
@@ -432,7 +433,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                   </div>
                 </div>
               </div>
-              <span class="sm-badge sm-badge-published"><?= count($linkedTasks) ?> tehtävää</span>
+              <span class="sm-badge sm-badge-published"><?= sm_h(sm_tr('count_tasks', ['count' => count($linkedTasks)], $lang)) ?></span>
             </div>
             <?php if (!empty($linkedTasks)): ?>
               <div class="sm-admin-entity-meta">
@@ -440,7 +441,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                   <span class="sm-badge sm-badge-task"><?= sm_h((string)$taskName) ?></span>
                 <?php endforeach; ?>
                 <?php if (count($linkedTasks) > 4): ?>
-                  <span class="sm-badge sm-badge-archived">+<?= count($linkedTasks) - 4 ?></span>
+                  <span class="sm-badge sm-badge-archived"><?= sm_h(sm_tr('count_more_tasks', ['count' => count($linkedTasks) - 4], $lang)) ?></span>
                 <?php endif; ?>
               </div>
             <?php endif; ?>
@@ -460,7 +461,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
 
           <dialog class="sm-modal sm-modal-admin" id="sm-admin-modal-ppe-<?= $itemId ?>">
             <div class="sm-modal-header">
-              <h3>Muokkaa suojainta: <?= sm_h((string)$item['name']) ?></h3>
+              <h3><?= sm_h(sm_tr('edit_ppe_title', ['name' => (string)$item['name']], $lang)) ?></h3>
               <button class="sm-btn sm-btn-ghost sm-btn-sm" type="button" data-close-admin-modal>&times;</button>
             </div>
             <?php if (!empty($linkedTasks)): ?>
@@ -501,7 +502,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <p class="sm-hint">Sallittu: SVG, PNG, JPG, WEBP – max 2 MB</p>
             </div>
             <div class="sm-ppe-img-upload">
-              <strong>Missä tehtävissä suojainta käytetään?</strong>
+              <strong><?= sm_h(sm_t('ppe_usage_title', $lang)) ?></strong>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=bulk_add_rule" class="sm-rule-form-grid" style="margin-top:.5rem">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="ppe_item_id" value="<?= $itemId ?>">
@@ -528,12 +529,12 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                     <?php endforeach; ?>
                   </select>
                 </label>
-                <label class="sm-form-full">Huomio <input name="notes" autocomplete="off" placeholder="Esim. koskee kaikkia Siilinjärven tehtäviä"></label>
+                <label class="sm-form-full">Huomio <input name="notes" autocomplete="off" placeholder="<?= sm_h(sm_t('ppe_usage_notes_placeholder', $lang)) ?>"></label>
                 <div class="sm-form-full">
-                  <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit">Liitä valittuihin tehtäviin</button>
+                  <button class="sm-btn sm-btn-secondary sm-btn-sm" type="submit"><?= sm_h(sm_t('link_to_selected_tasks', $lang)) ?></button>
                 </div>
               </form>
-              <p class="sm-hint">Jos et valitse yksittäisiä tehtäviä, suojain lisätään automaattisesti valitun ympäristön/työmaan tehtäville.</p>
+              <p class="sm-hint"><?= sm_h(sm_t('ppe_usage_hint', $lang)) ?></p>
             </div>
           </dialog>
         <?php endforeach; ?>
