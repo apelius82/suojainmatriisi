@@ -8,12 +8,12 @@ $editId = (int)($_GET['edit_id'] ?? 0);
 // Notifikaatiot
 $bulkAdded = (int)($_GET['bulk_added'] ?? 0);
 $errMsg = match ($_GET['error'] ?? '') {
-    'invalid_ppe'  => 'Valitse ensin suojain.',
-    'no_tasks'     => 'Ei tehtäviä valitulle alueelle.',
-    'upload_failed'=> 'Tiedoston lataus epäonnistui.',
-    'too_large'    => 'Tiedosto on liian suuri (max 2 MB).',
-    'invalid_type' => 'Kuvaa ei hyväksytty – sallitut: SVG, JPG, PNG, WEBP.',
-    'invalid_ext'  => 'Tiedostopääte ei sallittu.',
+    'invalid_ppe'  => sm_t('err_invalid_ppe', $lang),
+    'no_tasks'     => sm_t('err_no_tasks', $lang),
+    'upload_failed'=> sm_t('err_upload_failed', $lang),
+    'too_large'    => sm_t('err_too_large', $lang),
+    'invalid_type' => sm_t('err_invalid_type', $lang),
+    'move_failed'  => sm_t('err_move_failed', $lang),
     default        => '',
 };
 
@@ -61,7 +61,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
   <div class="sm-alert sm-alert-warn" role="alert"><?= sm_h($errMsg) ?></div>
 <?php endif; ?>
 <?php if ($bulkAdded > 0): ?>
-  <div class="sm-alert sm-alert-info" role="alert">Massalisäys onnistui: <?= $bulkAdded ?> sääntöä lisätty luonnoksina.</div>
+  <div class="sm-alert sm-alert-info" role="alert"><?= sm_h(str_replace('{count}', (string)$bulkAdded, sm_t('bulk_add_success', $lang))) ?></div>
 <?php endif; ?>
 
 <nav class="sm-admin-tabs" role="tablist" aria-label="Hallintaosiot">
@@ -103,7 +103,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
                  class="sm-btn sm-btn-ghost sm-btn-sm" title="Muokkaa"><?= $iconEdit ?> Muokkaa</a>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
                     
- data-confirm="<?= sm_h('Arkistoi toimintaympäristö ') . sm_h($env['name']) . sm_h('?') ?>" onsubmit="return confirm(this.dataset.confirm)">
+ data-confirm="<?= sm_h('Arkistoi toimintaympäristö ' . $env['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="environment">
                 <input type="hidden" name="entity_id" value="<?= (int)$env['id'] ?>">
@@ -170,7 +170,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=sites&edit_id=<?= (int)$site['id'] ?>"
                  class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
-                    data-confirm="<?= sm_h('Arkistoi työmaa ') . sm_h($site['name']) . sm_h('?') ?>" onsubmit="return confirm(this.dataset.confirm)">
+                    data-confirm="<?= sm_h('Arkistoi työmaa ' . $site['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="site">
                 <input type="hidden" name="entity_id" value="<?= (int)$site['id'] ?>">
@@ -247,7 +247,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=zones&edit_id=<?= (int)$zone['id'] ?>"
                  class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
-                    data-confirm="<?= sm_h('Arkistoi alue ') . sm_h($zone['name']) . sm_h('?') ?>" onsubmit="return confirm(this.dataset.confirm)">
+                    data-confirm="<?= sm_h('Arkistoi alue ' . $zone['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="zone">
                 <input type="hidden" name="entity_id" value="<?= (int)$zone['id'] ?>">
@@ -330,7 +330,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=tasks&edit_id=<?= (int)$task['id'] ?>"
                  class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
-                    data-confirm="<?= sm_h('Arkistoi tehtävä ') . sm_h($task['name']) . sm_h('?') ?>" onsubmit="return confirm(this.dataset.confirm)">
+                    data-confirm="<?= sm_h('Arkistoi tehtävä ' . $task['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="task">
                 <input type="hidden" name="entity_id" value="<?= (int)$task['id'] ?>">
@@ -411,7 +411,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
               <a href="<?= sm_h(sm_base_url()) ?>/index.php?page=dashboard&tab=ppe&edit_id=<?= (int)$item['id'] ?>"
                  class="sm-btn sm-btn-ghost sm-btn-sm"><?= $iconEdit ?> Muokkaa</a>
               <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=archive_entity"
-                    data-confirm="<?= sm_h('Arkistoi suojain ') . sm_h($item['name']) . sm_h('?') ?>" onsubmit="return confirm(this.dataset.confirm)">
+                    data-confirm="<?= sm_h('Arkistoi suojain ' . $item['name'] . '?') ?>" onsubmit="return confirm(this.dataset.confirm)">
                 <?= sm_csrf_field() ?>
                 <input type="hidden" name="entity_type" value="ppe">
                 <input type="hidden" name="entity_id" value="<?= (int)$item['id'] ?>">
@@ -712,7 +712,10 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
     <p style="font-size:.85rem;color:var(--sm-muted);margin:0 0 1rem">
       <?= sm_h(sm_t('bulk_add_desc', $lang)) ?>
     </p>
-    <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=bulk_add_rule" class="sm-rule-form-grid" id="sm-bulk-form">
+    <form method="post" action="<?= sm_h(sm_base_url()) ?>/index.php?action=bulk_add_rule"
+          class="sm-rule-form-grid" id="sm-bulk-form"
+          data-confirm="<?= sm_h(sm_t('bulk_add_confirm', $lang)) ?>"
+          onsubmit="return confirm(this.dataset.confirm)">
       <?= sm_csrf_field() ?>
       <label>Suojain
         <select name="ppe_item_id" required>
@@ -748,8 +751,7 @@ $iconArchive = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stro
       <label class="sm-form-full">Ehto <input name="condition_text" autocomplete="off" placeholder="Esim. pölyisessä työssä"></label>
       <label class="sm-form-full">Huomio <input name="notes" autocomplete="off" placeholder="Lisätiedot"></label>
       <div class="sm-form-full" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-        <button class="sm-btn sm-btn-primary" type="submit"
-          data-confirm="<?= sm_h(sm_t('bulk_add_confirm', $lang)) ?>" onclick="return confirm(this.dataset.confirm)">
+        <button class="sm-btn sm-btn-primary" type="submit">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
           Lisää kaikille tehtäville (luonnos)
         </button>

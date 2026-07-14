@@ -129,7 +129,10 @@ final class RequirementRepository extends BaseRepository
         if ($siteId > 0) {
             return 'site_task';
         }
-        return 'task';
+        if ($envId > 0) {
+            return 'task';
+        }
+        return 'global';
     }
 
     public function findRule(int $id): ?array

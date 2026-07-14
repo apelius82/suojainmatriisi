@@ -5,8 +5,14 @@ require_once __DIR__ . '/../../app/includes/bootstrap.php';
 
 sm_require_login();
 
+// Jaettu formaatticonfig (tiedostopääte → MIME type)
+$imgCfg    = require __DIR__ . '/../../app/config/ppe_image.php';
+$extToMime = $imgCfg['ext_to_mime'];
+
+// Rakenna tiedostonimen validointireges dynaamisesti sallituista päätteistä
+$extPattern = implode('|', array_map('preg_quote', array_keys($extToMime), array_fill(0, count($extToMime), '/')));
 $file = basename((string)($_GET['f'] ?? ''));
-if ($file === '' || !preg_match('/^ppe_\d+_[0-9a-f]+\.(svg|jpg|png|webp)$/', $file)) {
+if ($file === '' || !preg_match('/^ppe_\d+_[0-9a-f]+\.(' . $extPattern . ')$/', $file)) {
     http_response_code(400);
     exit;
 }
@@ -17,15 +23,8 @@ if (!is_file($path)) {
     exit;
 }
 
-$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-$mimeMap = [
-    'svg'  => 'image/svg+xml',
-    'jpg'  => 'image/jpeg',
-    'jpeg' => 'image/jpeg',
-    'png'  => 'image/png',
-    'webp' => 'image/webp',
-];
-$mime = $mimeMap[$ext] ?? 'application/octet-stream';
+$ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+$mime = $extToMime[$ext] ?? 'application/octet-stream';
 
 header('Content-Type: ' . $mime);
 header('Cache-Control: private, max-age=86400');

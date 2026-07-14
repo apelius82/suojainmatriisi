@@ -9,14 +9,10 @@ if ($ppeId < 1) {
     sm_redirect('/index.php?page=dashboard&tab=ppe&error=invalid_id');
 }
 
-// MIME type → canonical extension mapping (extension derived from validated MIME, not filename)
-$mimeToExt = [
-    'image/svg+xml' => 'svg',
-    'image/jpeg'    => 'jpg',
-    'image/png'     => 'png',
-    'image/webp'    => 'webp',
-];
-$maxBytes = 2 * 1024 * 1024; // 2 MB
+// Jaettu formaatticonfig (MIME type → kanoninen tiedostopääte)
+$imgCfg   = require __DIR__ . '/../../app/config/ppe_image.php';
+$mimeToExt = $imgCfg['mime_to_ext'];
+$maxBytes  = $imgCfg['max_bytes'];
 
 $file = $_FILES['ppe_image'] ?? null;
 if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
