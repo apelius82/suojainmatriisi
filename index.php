@@ -76,13 +76,12 @@ if ($page === 'search') {
     $zones        = $siteId > 0 ? $controller->zonesBySite($siteId) : [];
     $tasks        = $library->allTasks($envId > 0 ? $envId : null);
 
-    $result = null;
+    $taskCards = [];
     if ($siteId > 0 || $envId > 0) {
-        $result = $controller->searchResult(
+        $taskCards = $controller->taskCards(
             $envId  > 0 ? $envId  : null,
             $siteId > 0 ? $siteId : null,
-            $zoneId > 0 ? $zoneId : null,
-            $taskId > 0 ? $taskId : null
+            $zoneId > 0 ? $zoneId : null
         );
     }
     include __DIR__ . '/app/views/pages/search.php';

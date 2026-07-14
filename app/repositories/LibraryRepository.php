@@ -43,6 +43,14 @@ final class LibraryRepository extends BaseRepository
         return $row ?: null;
     }
 
+    public function findPpeItemByCode(string $code): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT id, code, name, category, item_class, standard_ref, icon, image_path FROM ppe_items WHERE code = ? AND is_active = 1');
+        $stmt->execute([$code]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
     public function findSite(int $id): ?array
     {
         $stmt = $this->pdo->prepare('SELECT id, environment_id, name, code, description FROM ppe_sites WHERE id = ? AND is_active = 1');
