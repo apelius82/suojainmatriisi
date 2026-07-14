@@ -25,6 +25,13 @@ if ($ppeId < 1) {
 
 // Jos ei valittuja tehtäviä, hae kaikki työmaan / ympäristön tehtävät
 if (empty($taskIds)) {
+    if ($siteId > 0 && $envId < 1) {
+        $site = $library->findSite($siteId);
+        $envId = (int)($site['environment_id'] ?? 0);
+        if ($envId < 1) {
+            sm_redirect('/index.php?page=dashboard&tab=rules&error=missing_environment');
+        }
+    }
     $allTasks = $library->allTasks($envId > 0 ? $envId : null);
     $taskIds = array_column($allTasks, 'id');
 }

@@ -15,6 +15,10 @@ final class PageController
 
     public function dashboard(): array
     {
+        $publishedRules = $this->requirements->listRules('published');
+        $taskMeta = $this->buildTaskMeta($publishedRules);
+        $ppeTaskLinks = $this->buildPpeTaskLinks($publishedRules);
+
         return [
             'environments' => $this->environments->all(),
             'sites'        => $this->library->allSites(),
@@ -23,6 +27,8 @@ final class PageController
             'ppeItems'     => $this->library->allPpeItems(),
             'rules'        => $this->requirements->listRules(null),
             'audit'        => $this->audit->latest(20),
+            'taskMeta'     => $taskMeta,
+            'ppeTaskLinks' => $ppeTaskLinks,
         ];
     }
 
@@ -64,6 +70,84 @@ final class PageController
         ];
     }
 
+    public function searchTaskCards(?int $envId, ?int $siteId, ?int $zoneId): array
+    {
+        $rules = $this->requirements->listRules('published', $envId);
+        $tasks = $this->library->allTasks($envId);
+        $ctxEnv = $envId ? $this->environments->find($envId) : null;
+        $ctxSite = $siteId ? $this->findSite($siteId) : null;
+        $ctxZone = $zoneId ? $this->zones->find($zoneId) : null;
+        $riskTerms = require __DIR__ . '/../config/risk_keywords.php';
+        $allPpe = $this->library->allPpeItems();
+        $ppeMap = [];
+        foreach ($allPpe as $item) {
+            $ppeMap[(int)$item['id']] = $item;
+        }
+
+        $cards = [];
+        foreach ($tasks as $task) {
+            $taskId = (int)($task['id'] ?? 0);
+            if ($taskId < 1) {
+                continue;
+            }
+
+            $resolved = $this->resolver->resolve($rules, $envId, $siteId, $zoneId, $taskId);
+            $sections = $this->resolver->groupSections($resolved['resolved'], $ppeMap);
+            $totalPpe = count($sections['always'] ?? [])
+                + count($sections['conditional'] ?? [])
+                + count($sections['other_safety'] ?? []);
+
+            // Kun käyttäjä rajaa ympäristöllä/työmaalla, näytetään vain kortit joilla on
+            // kyseisessä kontekstissa ratkaistavia vaatimuksia.
+            if ($totalPpe === 0 && ($siteId !== null || $envId !== null)) {
+                continue;
+            }
+
+            $notes = [];
+            $risks = [];
+            foreach (($sections['information'] ?? []) as $info) {
+                $text = trim((string)($info['rule']['notes'] ?? ''));
+                if ($text === '') {
+                    continue;
+                }
+                $lower = mb_strtolower($text);
+                $isRisk = false;
+                foreach ($riskTerms as $term) {
+                    if (str_contains($lower, $term)) {
+                        $isRisk = true;
+                        break;
+                    }
+                }
+                if ($isRisk) {
+                    $risks[] = $text;
+                } else {
+                    $notes[] = $text;
+                }
+            }
+
+            $cards[] = [
+                'task' => $task,
+                'sections' => $sections,
+                'summary' => [
+                    'total' => $totalPpe,
+                    'always' => count($sections['always'] ?? []),
+                    'conditional' => count($sections['conditional'] ?? []),
+                    'other' => count($sections['other_safety'] ?? []),
+                ],
+                'notes' => array_values(array_unique($notes)),
+                'risks' => array_values(array_unique($risks)),
+                'context' => [
+                    'env' => $ctxEnv,
+                    'site' => $ctxSite,
+                    'zone' => $ctxZone,
+                ],
+            ];
+        }
+
+        usort($cards, static fn(array $a, array $b): int => strcmp((string)$a['task']['name'], (string)$b['task']['name']));
+        return $cards;
+    }
+
     public function zonesBySite(int $siteId): array
     {
         return $this->zones->allBySite($siteId);
@@ -85,5 +169,68 @@ final class PageController
             if ((int)$t['id'] === $id) return $t;
         }
         return null;
+    }
+
+    /** @param array<int, array<string, mixed>> $rules */
+    private function buildTaskMeta(array $rules): array
+    {
+        $meta = [];
+        foreach ($rules as $rule) {
+            $taskId = (int)($rule['task_id'] ?? 0);
+            if ($taskId < 1) {
+                continue;
+            }
+            if (!isset($meta[$taskId])) {
+                $meta[$taskId] = [
+                    'ppeIds' => [],
+                    'sites' => [],
+                    'zones' => [],
+                ];
+            }
+            $ppeId = (int)($rule['ppe_item_id'] ?? 0);
+            if ($ppeId > 0) {
+                $meta[$taskId]['ppeIds'][$ppeId] = true;
+            }
+            $siteName = trim((string)($rule['site_name'] ?? ''));
+            if ($siteName !== '') {
+                $meta[$taskId]['sites'][$siteName] = true;
+            }
+            $zoneName = trim((string)($rule['zone_name'] ?? ''));
+            if ($zoneName !== '') {
+                $meta[$taskId]['zones'][$zoneName] = true;
+            }
+        }
+
+        foreach ($meta as $taskId => $item) {
+            $meta[$taskId] = [
+                'ppe_count' => count($item['ppeIds']),
+                'sites' => array_keys($item['sites']),
+                'zones' => array_keys($item['zones']),
+            ];
+        }
+        return $meta;
+    }
+
+    /** @param array<int, array<string, mixed>> $rules */
+    private function buildPpeTaskLinks(array $rules): array
+    {
+        $links = [];
+        foreach ($rules as $rule) {
+            $ppeId = (int)($rule['ppe_item_id'] ?? 0);
+            $taskId = (int)($rule['task_id'] ?? 0);
+            $taskName = trim((string)($rule['task_name'] ?? ''));
+            if ($ppeId < 1 || $taskId < 1 || $taskName === '') {
+                continue;
+            }
+            if (!isset($links[$ppeId])) {
+                $links[$ppeId] = [];
+            }
+            $links[$ppeId][$taskId] = $taskName;
+        }
+        foreach ($links as $ppeId => $tasks) {
+            asort($tasks);
+            $links[$ppeId] = array_values($tasks);
+        }
+        return $links;
     }
 }

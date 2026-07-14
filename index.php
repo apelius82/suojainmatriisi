@@ -68,23 +68,18 @@ if ($page === 'search') {
     $envId  = (int)($_GET['env_id']  ?? 0);
     $siteId = (int)($_GET['site_id'] ?? 0);
     $zoneId = (int)($_GET['zone_id'] ?? 0);
-    $taskId = (int)($_GET['task_id'] ?? 0);
 
     $searchData = $controller->searchData();
     $environments = $searchData['environments'];
     $sites        = $library->allSites($envId > 0 ? $envId : null);
     $zones        = $siteId > 0 ? $controller->zonesBySite($siteId) : [];
-    $tasks        = $library->allTasks($envId > 0 ? $envId : null);
+    $taskCards    = $controller->searchTaskCards(
+        $envId > 0 ? $envId : null,
+        $siteId > 0 ? $siteId : null,
+        $zoneId > 0 ? $zoneId : null
+    );
+    $tasks        = array_map(static fn(array $card): array => $card['task'], $taskCards);
 
-    $result = null;
-    if ($siteId > 0 || $envId > 0) {
-        $result = $controller->searchResult(
-            $envId  > 0 ? $envId  : null,
-            $siteId > 0 ? $siteId : null,
-            $zoneId > 0 ? $zoneId : null,
-            $taskId > 0 ? $taskId : null
-        );
-    }
     include __DIR__ . '/app/views/pages/search.php';
 } else {
     $data = $controller->dashboard();
