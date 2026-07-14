@@ -31,6 +31,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/rate_limit.php';
 require_once __DIR__ . '/../services/AuthService.php';
 require_once __DIR__ . '/../services/RequirementInheritanceService.php';
+require_once __DIR__ . '/../services/RequirementResolver.php';
 require_once __DIR__ . '/../services/WorkflowService.php';
 require_once __DIR__ . '/../controllers/PageController.php';
 require_once __DIR__ . '/../repositories/BaseRepository.php';
@@ -38,6 +39,8 @@ require_once __DIR__ . '/../repositories/UserRepository.php';
 require_once __DIR__ . '/../repositories/LibraryRepository.php';
 require_once __DIR__ . '/../repositories/RequirementRepository.php';
 require_once __DIR__ . '/../repositories/AuditRepository.php';
+require_once __DIR__ . '/../repositories/EnvironmentRepository.php';
+require_once __DIR__ . '/../repositories/ZoneRepository.php';
 
 $smPdo = Database::connect($smConfig['db']);
 $schemaMarker = __DIR__ . '/../../storage/logs/.schema_ready';

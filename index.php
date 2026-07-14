@@ -35,8 +35,17 @@ if ($page === 'login') {
 
 sm_require_login();
 
-$library = new LibraryRepository($smPdo);
-$controller = new PageController($library, new RequirementRepository($smPdo), new AuditRepository($smPdo), new RequirementInheritanceService());
+$library      = new LibraryRepository($smPdo);
+$envRepo      = new EnvironmentRepository($smPdo);
+$zoneRepo     = new ZoneRepository($smPdo);
+$controller   = new PageController(
+    $library,
+    new RequirementRepository($smPdo),
+    new AuditRepository($smPdo),
+    new RequirementResolver(),
+    $envRepo,
+    $zoneRepo
+);
 
 ?><!DOCTYPE html>
 <html lang="<?= sm_h($_SESSION['sm_lang'] ?? 'fi') ?>">
@@ -56,11 +65,26 @@ $controller = new PageController($library, new RequirementRepository($smPdo), ne
 <main class="sm-page-container">
 <?php
 if ($page === 'search') {
+    $envId  = (int)($_GET['env_id']  ?? 0);
     $siteId = (int)($_GET['site_id'] ?? 0);
+    $zoneId = (int)($_GET['zone_id'] ?? 0);
     $taskId = (int)($_GET['task_id'] ?? 0);
-    $result = $controller->searchResult($siteId > 0 ? $siteId : null, $taskId > 0 ? $taskId : null);
-    $sites = $library->allSites();
-    $tasks = $library->allTasks();
+
+    $searchData = $controller->searchData();
+    $environments = $searchData['environments'];
+    $sites        = $library->allSites($envId > 0 ? $envId : null);
+    $zones        = $siteId > 0 ? $controller->zonesBySite($siteId) : [];
+    $tasks        = $library->allTasks($envId > 0 ? $envId : null);
+
+    $result = null;
+    if ($siteId > 0 || $envId > 0) {
+        $result = $controller->searchResult(
+            $envId  > 0 ? $envId  : null,
+            $siteId > 0 ? $siteId : null,
+            $zoneId > 0 ? $zoneId : null,
+            $taskId > 0 ? $taskId : null
+        );
+    }
     include __DIR__ . '/app/views/pages/search.php';
 } else {
     $data = $controller->dashboard();

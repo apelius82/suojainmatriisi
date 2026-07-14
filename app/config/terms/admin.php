@@ -1,0 +1,67 @@
+<?php
+return [
+    // Toimintaympäristö
+    'environment'       => ['fi' => 'Toimintaympäristö', 'sv' => 'Driftsmiljö',      'en' => 'Operating environment', 'it' => 'Ambiente operativo', 'el' => 'Λειτουργικό περιβάλλον'],
+    'environments'      => ['fi' => 'Toimintaympäristöt','sv' => 'Driftsmiljöer',    'en' => 'Operating environments','it' => 'Ambienti operativi', 'el' => 'Λειτουργικά περιβάλλοντα'],
+    // Alue / laitos / osasto
+    'zone'              => ['fi' => 'Alue / laitos',     'sv' => 'Område / anläggning','en' => 'Zone / area',          'it' => 'Zona / impianto',    'el' => 'Ζώνη / περιοχή'],
+    'zones'             => ['fi' => 'Alueet / laitokset','sv' => 'Områden',           'en' => 'Zones',                'it' => 'Zone',               'el' => 'Ζώνες'],
+    // Vaatimustasot
+    'mandatory'         => ['fi' => 'Pakollinen',        'sv' => 'Obligatorisk',      'en' => 'Mandatory',            'it' => 'Obbligatorio',       'el' => 'Υποχρεωτικό'],
+    'conditional'       => ['fi' => 'Ehdollinen',        'sv' => 'Villkorlig',        'en' => 'Conditional',          'it' => 'Condizionale',       'el' => 'Υπό όρους'],
+    'prohibited'        => ['fi' => 'Kielletty',         'sv' => 'Förbjuden',         'en' => 'Prohibited',           'it' => 'Vietato',            'el' => 'Απαγορευμένο'],
+    'information'       => ['fi' => 'Ohje / tiedoksi',   'sv' => 'Information',       'en' => 'Information',          'it' => 'Informazione',       'el' => 'Πληροφορία'],
+    'not_applicable'    => ['fi' => 'Ei sovelleta',      'sv' => 'Ej tillämplig',     'en' => 'Not applicable',       'it' => 'Non applicabile',    'el' => 'Δεν εφαρμόζεται'],
+    // Suojaimen luokat
+    'personal_protection' => ['fi' => 'Henkilönsuojain','sv' => 'Personlig skyddsutrustning','en' => 'Personal protective equipment','it' => 'Dispositivo di protezione individuale','el' => 'Μέσο ατομικής προστασίας'],
+    'other_safety'      => ['fi' => 'Muu turvallisuusvaruste','sv' => 'Övrig säkerhetsutrustning','en' => 'Other safety equipment','it' => 'Altro dispositivo di sicurezza','el' => 'Άλλος εξοπλισμός ασφαλείας'],
+    // Hakuvaiheen otsikot
+    'select_environment'=> ['fi' => 'Valitse toimintaympäristö', 'sv' => 'Välj driftsmiljö',    'en' => 'Select environment',     'it' => 'Seleziona ambiente',         'el' => 'Επιλέξτε περιβάλλον'],
+    'select_site'       => ['fi' => 'Valitse työmaa / toimipaikka','sv' => 'Välj arbetsplats',  'en' => 'Select site / workplace','it' => 'Seleziona cantiere',         'el' => 'Επιλέξτε εργοτάξιο'],
+    'select_zone'       => ['fi' => 'Valitse alue / laitos',      'sv' => 'Välj område',        'en' => 'Select zone / area',     'it' => 'Seleziona zona',             'el' => 'Επιλέξτε ζώνη'],
+    'select_task'       => ['fi' => 'Valitse työlaji / tehtävä',  'sv' => 'Välj arbetstyp',     'en' => 'Select job type / task', 'it' => 'Seleziona mansione',         'el' => 'Επιλέξτε είδος εργασίας'],
+    'show_requirements' => ['fi' => 'Näytä vaatimukset',          'sv' => 'Visa krav',          'en' => 'Show requirements',      'it' => 'Mostra requisiti',           'el' => 'Εμφάνιση απαιτήσεων'],
+    // Tulossivun osiot
+    'section_always'    => ['fi' => 'A) Aina vaadittavat',        'sv' => 'A) Alltid obligatoriska','en' => 'A) Always required', 'it' => 'A) Sempre obbligatori',       'el' => 'Α) Πάντα απαιτούμενα'],
+    'section_conditional'=> ['fi'=> 'B) Tilanteen mukaan',        'sv' => 'B) Situationsbetingat', 'en' => 'B) Situational',    'it' => 'B) In base alla situazione',  'el' => 'Β) Ανά περίσταση'],
+    'section_other'     => ['fi' => 'C) Muut turvallisuusvarusteet','sv'=>'C) Övrig säkerhetsutrustning','en'=>'C) Other safety equipment','it'=>'C) Altri dispositivi di sicurezza','el'=>'Γ) Άλλος εξοπλισμός'],
+    'section_critical'  => ['fi' => 'D) Kriittiset huomiot',      'sv' => 'D) Kritiska observationer','en'=> 'D) Critical notes','it'=> 'D) Note critiche',             'el' => 'Δ) Κρίσιμες παρατηρήσεις'],
+    'section_attachments'=> ['fi'=> 'E) Ohjeet ja liitteet',      'sv' => 'E) Instruktioner och bilagor','en'=> 'E) Guides & attachments','it'=> 'E) Guide e allegati',  'el' => 'Ε) Οδηγίες και συνημμένα'],
+    // Virallinen huomio
+    'official_only'     => ['fi' => 'Vain sähköinen ohje on virallinen','sv'=>'Endast elektronisk instruktion är officiell','en'=>'Only the electronic guide is official','it'=>'Solo la guida elettronica è ufficiale','el'=>'Μόνο ο ηλεκτρονικός οδηγός είναι επίσημος'],
+    'approved_version'  => ['fi' => 'Hyväksytyn version päiväys', 'sv' => 'Godkänd versionsdatum','en' => 'Approved version date','it' => 'Data versione approvata',   'el' => 'Ημερομηνία εγκεκριμένης έκδοσης'],
+    // Lähde / periytyminen
+    'source'            => ['fi' => 'Lähde',                      'sv' => 'Källa',               'en' => 'Source',                'it' => 'Fonte',                      'el' => 'Πηγή'],
+    'condition'         => ['fi' => 'Ehto',                       'sv' => 'Villkor',             'en' => 'Condition',             'it' => 'Condizione',                 'el' => 'Προϋπόθεση'],
+    'standard'          => ['fi' => 'Standardi',                  'sv' => 'Standard',            'en' => 'Standard',              'it' => 'Standard',                   'el' => 'Πρότυπο'],
+    // Scope-tasot
+    'scope_global'      => ['fi' => 'Yleinen vaatimus',           'sv' => 'Allmänt krav',        'en' => 'General requirement',   'it' => 'Requisito generale',         'el' => 'Γενική απαίτηση'],
+    'scope_environment' => ['fi' => 'Toimintaympäristövaatimus',  'sv' => 'Krav för driftsmiljö','en' => 'Environment requirement','it' => 'Requisito ambiente',         'el' => 'Απαίτηση περιβάλλοντος'],
+    'scope_site'        => ['fi' => 'Työmaakohtainen',            'sv' => 'Arbetsplatsspecifikt','en' => 'Site-specific',          'it' => 'Specifico del cantiere',     'el' => 'Ειδικό εργοταξίου'],
+    'scope_zone'        => ['fi' => 'Aluekohtainen',              'sv' => 'Områdesspecifikt',    'en' => 'Zone-specific',          'it' => 'Specifico della zona',       'el' => 'Ειδικό ζώνης'],
+    'scope_task'        => ['fi' => 'Tehtäväkohtainen',           'sv' => 'Arbetsuppgiftsspecifikt','en'=>'Task-specific',         'it' => 'Specifico del compito',      'el' => 'Ειδικό εργασίας'],
+    'scope_site_task'   => ['fi' => 'Työmaa + tehtävä',           'sv' => 'Arbetsplats + uppgift','en' => 'Site + task',           'it' => 'Cantiere + compito',         'el' => 'Εργοτάξιο + εργασία'],
+    'scope_zone_task'   => ['fi' => 'Alue + tehtävä',             'sv' => 'Område + uppgift',    'en' => 'Zone + task',           'it' => 'Zona + compito',             'el' => 'Ζώνη + εργασία'],
+    'scope_phase'       => ['fi' => 'Työvaihe',                   'sv' => 'Arbetsmoment',        'en' => 'Work phase',            'it' => 'Fase di lavoro',             'el' => 'Φάση εργασίας'],
+    'scope_exception'   => ['fi' => 'Hyväksytty poikkeus',        'sv' => 'Godkänt undantag',    'en' => 'Approved exception',    'it' => 'Eccezione approvata',        'el' => 'Εγκεκριμένη εξαίρεση'],
+    // Työnkulku
+    'draft'             => ['fi' => 'Luonnos',                    'sv' => 'Utkast',              'en' => 'Draft',                 'it' => 'Bozza',                      'el' => 'Πρόχειρο'],
+    'review'            => ['fi' => 'Tarkastettavana',            'sv' => 'Under granskning',    'en' => 'Under review',          'it' => 'In revisione',               'el' => 'Υπό αναθεώρηση'],
+    'approved'          => ['fi' => 'Hyväksytty',                 'sv' => 'Godkänd',             'en' => 'Approved',              'it' => 'Approvato',                  'el' => 'Εγκεκριμένο'],
+    'published'         => ['fi' => 'Julkaistu',                  'sv' => 'Publicerad',          'en' => 'Published',             'it' => 'Pubblicato',                 'el' => 'Δημοσιευμένο'],
+    'archived'          => ['fi' => 'Arkistoitu',                 'sv' => 'Arkiverad',           'en' => 'Archived',              'it' => 'Archiviato',                 'el' => 'Αρχειοθετημένο'],
+    // Hallinnan välilehdet
+    'tab_environments'  => ['fi' => 'Toimintaympäristöt',         'sv' => 'Driftsmiljöer',       'en' => 'Environments',          'it' => 'Ambienti',                   'el' => 'Περιβάλλοντα'],
+    'tab_sites'         => ['fi' => 'Työmaat',                    'sv' => 'Arbetsplatser',       'en' => 'Sites',                 'it' => 'Cantieri',                   'el' => 'Εργοτάξια'],
+    'tab_zones'         => ['fi' => 'Alueet',                     'sv' => 'Områden',             'en' => 'Zones',                 'it' => 'Zone',                       'el' => 'Ζώνες'],
+    'tab_tasks'         => ['fi' => 'Työlajit',                   'sv' => 'Arbetstyper',         'en' => 'Job types',             'it' => 'Mansioni',                   'el' => 'Είδη εργασίας'],
+    'tab_ppe'           => ['fi' => 'Suojainkirjasto',            'sv' => 'Skyddsutrustningsbibliotek','en' => 'PPE library',     'it' => 'Biblioteca DPI',             'el' => 'Βιβλιοθήκη ΜΑΠ'],
+    'tab_rules'         => ['fi' => 'Vaatimussäännöt',            'sv' => 'Kravregler',          'en' => 'Requirement rules',     'it' => 'Regole di requisito',        'el' => 'Κανόνες απαιτήσεων'],
+    'tab_audit'         => ['fi' => 'Audit-loki',                 'sv' => 'Granskningslogg',     'en' => 'Audit log',             'it' => 'Registro audit',             'el' => 'Αρχείο ελέγχου'],
+    // Yleisiä
+    'all_environments'  => ['fi' => 'Kaikki ympäristöt',          'sv' => 'Alla miljöer',        'en' => 'All environments',      'it' => 'Tutti gli ambienti',         'el' => 'Όλα τα περιβάλλοντα'],
+    'all_sites'         => ['fi' => 'Kaikki työmaat',             'sv' => 'Alla arbetsplatser',  'en' => 'All sites',             'it' => 'Tutti i cantieri',           'el' => 'Όλα τα εργοτάξια'],
+    'all_zones'         => ['fi' => 'Kaikki alueet',              'sv' => 'Alla områden',        'en' => 'All zones',             'it' => 'Tutte le zone',              'el' => 'Όλες οι ζώνες'],
+    'all_tasks'         => ['fi' => 'Kaikki työlajit',            'sv' => 'Alla arbetstyper',    'en' => 'All job types',         'it' => 'Tutte le mansioni',          'el' => 'Όλα τα είδη εργασίας'],
+    'no_zone'           => ['fi' => 'Ei aluerajausta',            'sv' => 'Inget område',        'en' => 'No zone filter',        'it' => 'Nessuna zona',               'el' => 'Χωρίς ζώνη'],
+];
