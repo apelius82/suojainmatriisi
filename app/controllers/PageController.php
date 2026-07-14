@@ -64,6 +64,43 @@ final class PageController
         ];
     }
 
+    /** Rakentaa hakusuodattimelle näkyvät tehtäväkortit ja niiden koonnin */
+    public function taskCards(?int $envId, ?int $siteId, ?int $zoneId): array
+    {
+        $tasks = $this->library->allTasks($envId);
+        $cards = [];
+
+        foreach ($tasks as $task) {
+            $taskId = (int)$task['id'];
+            if ($taskId < 1) {
+                continue;
+            }
+
+            $result = $this->searchResult($envId, $siteId, $zoneId, $taskId);
+            $sections = $result['sections'] ?? ['always' => [], 'conditional' => [], 'other_safety' => [], 'information' => []];
+            $summary = [
+                'always'       => count($sections['always'] ?? []),
+                'conditional'  => count($sections['conditional'] ?? []),
+                'other_safety' => count($sections['other_safety'] ?? []),
+                'information'  => count($sections['information'] ?? []),
+            ];
+            $summary['total'] = $summary['always'] + $summary['conditional'] + $summary['other_safety'] + $summary['information'];
+
+            // Suodatettu näkymä: näytä vain tehtävät, joilla on oikeasti sisältöä valittuun kontekstiin.
+            if (($envId !== null || $siteId !== null || $zoneId !== null) && $summary['total'] === 0) {
+                continue;
+            }
+
+            $cards[] = [
+                'task'    => $task,
+                'result'  => $result,
+                'summary' => $summary,
+            ];
+        }
+
+        return $cards;
+    }
+
     public function zonesBySite(int $siteId): array
     {
         return $this->zones->allBySite($siteId);
