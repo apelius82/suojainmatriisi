@@ -76,7 +76,7 @@ function test_zone_overrides_site(): void
     // Zone on spesifisempi (scopeLevel 4) kuin site (3), joten zone voittaa
     $winner = $result['resolved'][0];
     assert($winner['requirement_level'] === 'mandatory', 'T3: Zone mandatory voittaa site recommended');
-    assert($winner['_source_scope'] === 'mandatory' || $winner['_source_scope'] === 'zone', 'T3: Lähde pitää olla zone');
+    assert($winner['_source_scope'] === 'zone', 'T3: Lähde pitää olla zone');
 }
 
 // -------------------------------------------------------------------
