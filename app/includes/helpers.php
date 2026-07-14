@@ -27,7 +27,10 @@ function sm_log(string $message, array $context = []): void
     global $smConfig;
     $logFile = $smConfig['log_file'] ?? (__DIR__ . '/../../storage/logs/suojainmatriisi.log');
     $line = sprintf("[%s] %s %s\n", date('c'), $message, $context ? json_encode($context, JSON_UNESCAPED_UNICODE) : '');
-    @file_put_contents($logFile, $line, FILE_APPEND);
+    $result = file_put_contents($logFile, $line, FILE_APPEND);
+    if ($result === false) {
+        error_log('sm_log write failed for ' . $logFile);
+    }
 }
 
 function sm_base_url(): string

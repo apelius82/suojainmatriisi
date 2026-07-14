@@ -40,5 +40,8 @@ require_once __DIR__ . '/../repositories/RequirementRepository.php';
 require_once __DIR__ . '/../repositories/AuditRepository.php';
 
 $smPdo = Database::connect($smConfig['db']);
-MigrationService::migrate($smPdo, __DIR__ . '/../../database/migrations');
-MigrationService::seed($smPdo, __DIR__ . '/../../database/seeds');
+if (empty($_SESSION['sm_schema_ready'])) {
+    MigrationService::migrate($smPdo, __DIR__ . '/../../database/migrations');
+    MigrationService::seed($smPdo, __DIR__ . '/../../database/seeds');
+    $_SESSION['sm_schema_ready'] = true;
+}

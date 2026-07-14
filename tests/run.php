@@ -8,13 +8,15 @@ require_once __DIR__ . '/InheritanceServiceTest.php';
 require_once __DIR__ . '/WorkflowAuthCsrfTest.php';
 require_once __DIR__ . '/I18nSearchTest.php';
 
-$tests = get_defined_functions()['user'];
 $ran = 0;
-foreach ($tests as $fn) {
-    if (str_starts_with($fn, 'test_')) {
-        $fn();
-        $ran++;
-    }
+foreach ([
+    'test_inheritance_resolution',
+    'test_workflow_transitions',
+    'test_csrf_and_auth',
+    'test_languages_available',
+] as $fn) {
+    $fn();
+    $ran++;
 }
 
 echo "OK: {$ran} tests passed\n";
